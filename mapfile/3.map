@@ -1,0 +1,12 @@
+[Map]
+image=3.bmp
+wrap=yes
+scroll=none
+author=Soen6441_team_25
+warn=yes
+
+[Continents]
+A=10
+
+[Territories]
+2,472,183,A,3

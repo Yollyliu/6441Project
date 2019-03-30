@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="E:\安装程序\JAVA\eclipse-jee-kepler-SR1-win32-x86_64\eclipse\plugins\org.hamcrest.core_1.3.0.v201303031735.jar;E:\安装程序\JAVA\eclipse-jee-kepler-SR1-win32-x86_64\eclipse\plugins\org.junit_4.11.0.v201303080030\junit.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="Model,View,Controller" source="1.7" sourcefiles="src/DrawLinw.java,JunitTest/TestCheckmap4.java,JunitTest/TestPlayGame.java,JunitTest/AllTests.java,JunitTest/TestCheckmap.java,src/DragImage.java,src/ExampleAppStarter.java,src/MouseListener.java,JunitTest/TestCheckmap5.java,src/Circle.java,src/DeleteImage.java,src/MoveImage.java,src/Panel.java,src/Test.java,JunitTest/TestCheckmap2.java,JunitTest/TestIO.java,JunitTest/TestCheckmap6.java,JunitTest/TestCheckmap3.java,src/TestJunit5.java,src/MouseClickListner.java,src/DragLabelOnLayeredPane.java" sourcepath="src;JunitTest" splitindex="true" use="true" version="true">
+            <link href="file:/C:/Users/songchenwei/workspace/6441/doc/"/>
+        </javadoc>
+    </target>
+</project>

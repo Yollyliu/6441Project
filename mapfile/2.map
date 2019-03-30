@@ -1,0 +1,17 @@
+[Map]
+image=2.bmp
+wrap=yes
+scroll=none
+author=Soen6441_team_25
+warn=yes
+
+[Continents]
+A=10
+B=10
+
+[Territories]
+3,247,231,A,2,6
+2,553,236,A,3
+6,265,82,B,5,3
+5,503,101,B,6,4
+4,771,121,B,5
