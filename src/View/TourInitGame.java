@@ -16,12 +16,12 @@ import Controller.InitGame_controller;
 import Model.*;
 
 /**
- * <h1>TourInitGame</h1>
- * Input the player types, game number, turn number and select map.
+ * <h1>InitGame</h1>
+ * Input the player number and select map.
  *
- * @author tianshu_ji
+ * @author chenwei_song
  * @version 3.0
- * @since 2019-04-07
+ * @since 2019-03-01
  */
 public class TourInitGame extends JFrame {
 

@@ -401,34 +401,34 @@ public class BackEnd implements Observer, Serializable {
 				" in BackEnd *************************");
 
 		boolean canAttack = false;
-		System.out.println("AAA" + playerSet.size());
-		System.out.println("BBB" + player);
-		System.out.println("CCC" + playerSet.get(player));
-		System.out.println("The result of player is "+
-				playerSet.get(player).getPlayerName());
-		System.out.println("The country list of player is "+
-				playerSet.get(player).getCountryList().size());
+//		System.out.println("AAA" + playerSet.size());
+//		System.out.println("BBB" + player);
+//		System.out.println("CCC" + playerSet.get(player));
+//		System.out.println("The result of player is "+
+//				playerSet.get(player).getPlayerName());
+//		System.out.println("The country list of player is "+
+//				playerSet.get(player).getCountryList().size());
 		LinkedList<Country> countrylist = playerSet.get(player).getCountryList();
 		System.out.println("********* Begin canAttack BendEnd *********");
 		for (int i = 0; i < countrylist.size(); i++) {
 			String attcoun = String.valueOf(countrylist.get(i).getName());
 			String[] surround = countries.get(attcoun).getCountryList().split(" ");
-			System.out.println("Country : "+ attcoun+ " Army: "+countries.get(attcoun).getArmy());
+			//System.out.println("Country : "+ attcoun+ " Army: "+countries.get(attcoun).getArmy());
 			for (int j = 0; j < surround.length; j++) {
 				Color attColor = playerSet.get(player).getColor();
 				Color defColor = countries.get(surround[j]).getColor();
 				//System.out.println("Find a different player country :");
-				System.out.println("Country : "+ attcoun+ " has neib: "+surround.length);
+				//System.out.println("Country : "+ attcoun+ " has neib: "+surround.length);
 				//if (attColor != defColor && countrylist.get(i).getArmy() > 1) {
 				if (attColor != defColor && countries.get(attcoun).getArmy() > 1) {
 
-					System.out.println("Definder is "+surround[j]);
+				//	System.out.println("Definder is "+surround[j]);
 					canAttack = true;
 				}
 			}
 		}
 		System.out.println();
-		System.out.println("The result of attack is "+ canAttack);
+		//System.out.println("The result of attack is "+ canAttack);
 		System.out.println();
 		System.out.println("**************End of canAttack " +
 				" in BackEnd *************************");

@@ -254,7 +254,6 @@ public class Attack implements Serializable {
 	 * This method implements according different mode invoking different attack
 	 * function.
 	 *
-	 * @param behavior player behavior.
 	 * @return A result of attack.
 	 */
 	public String attacking(String behavior) {
@@ -588,8 +587,6 @@ public class Attack implements Serializable {
 
 		System.out.println("Updating in Attack");
 		System.out.println();
-		System.out.println();
-		System.out.println();
 		System.out.println("Updating Card");
 //		attacker can get a card;
 		this.HAS_CARD = true;
@@ -616,7 +613,8 @@ public class Attack implements Serializable {
 			nullList.clear();
 			defPlayer.setCardList(nullList);
 			break;
-		}	
+		}
+		System.out.println("After change Card");
 		System.out.println("Player" + attPlayer.getPlayerName()+ " cards: " + attPlayer.getCardList().size());
 		for (Card card : attPlayer.getCardList()) {
 			System.out.println(card.getName());
@@ -632,7 +630,8 @@ public class Attack implements Serializable {
 		System.out.println("Updating country color in playSet and countries");
 //      update information, like Player, country
 		Country country = countries.get(defendCountry);
-		country.setColor(countries.get(attackCountry).getColor());
+//		country.setColor(countries.get(attackCountry).getColor());
+		countries.get(defendCountry).setColor(countries.get(attackCountry).getColor());
 
 		LinkedList<Country> list = playerSet.get(attPlayer.getPlayerName()).getCountryList();
 		list.add(country);
