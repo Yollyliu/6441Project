@@ -111,6 +111,29 @@ public class InitializePhase extends Observable {
 	}
 
 	/**
+	 * This method implements player objects and stores them into player set.
+	 *
+	 * @return true if the size of player set is non-empty, otherwise is false.
+	 */
+	private boolean initializePlayerSet() {
+		LinkedList<Color> colorLinkedList = cList.getColors();
+		for (int i = 1; i <= playerNum; i++) {
+			Player player = new Player(String.valueOf(i),behavoirs.get(i - 1));
+			System.out.println("player name: " + String.valueOf(i) + ",mode: " + behavoirs.get(i - 1));
+			player.setColor(colorLinkedList.get(i - 1));// set player color
+			playerSet.put(player.getPlayerName(), player);// add player to playerSet
+		}
+
+		if (playerSet.size() == playerNum) {
+			System.out.println("InitializePlayerSet success");
+			return true;
+		} else {
+			System.out.println("InitializePlayerSet Failure");
+			return false;
+		}
+	}
+
+	/**
 	 * This method invokes judgePlayerNum(), initializePlayerSet(),
 	 * initializePlayerSet(), initializeCountries() to implement game's initializing
 	 * phase.
@@ -153,28 +176,7 @@ public class InitializePhase extends Observable {
 
 	}
 
-	/**
-	 * This method implements player objects and stores them into player set.
-	 *
-	 * @return true if the size of player set is non-empty, otherwise is false.
-	 */
-	private boolean initializePlayerSet() {
-		LinkedList<Color> colorLinkedList = cList.getColors();
-		for (int i = 1; i <= playerNum; i++) {
-			Player player = new Player(String.valueOf(i),behavoirs.get(i - 1));
-			System.out.println("player name: " + String.valueOf(i) + ",mode: " + behavoirs.get(i - 1));
-			player.setColor(colorLinkedList.get(i - 1));// set player color
-			playerSet.put(player.getPlayerName(), player);// add player to playerSet
-		}
 
-		if (playerSet.size() == playerNum) {
-			System.out.println("InitializePlayerSet success");
-			return true;
-		} else {
-			System.out.println("InitializePlayerSet Failure");
-			return false;
-		}
-	}
 
 	/**
 	 * This method bases the number of players to initialize the number of armies.
@@ -188,7 +190,7 @@ public class InitializePhase extends Observable {
 			armyDefault = 20;
 			break;
 		case 3:
-			armyDefault = 10;
+			armyDefault = 13;
 			break;
 		case 4:
 			armyDefault = 30;
@@ -225,16 +227,16 @@ public class InitializePhase extends Observable {
 			return false;
 
 		} else {
-			LinkedList<String> countryList = new LinkedList<>();
-			for (Map.Entry<String, Country> entry : countries.entrySet()) {
+			LinkedList <String> countryList = new LinkedList <>();
+			for (Map.Entry <String, Country> entry : countries.entrySet()) {
 				countryList.addLast(entry.getKey());
 			}
 
 			while (!countryList.isEmpty()) {
 				Random randomC = new Random();
 				if (countryList.size() < playerNum) {
-					LinkedList<String> playerList = new LinkedList<>();
-					for (Map.Entry<String, Player> entry : playerSet.entrySet()) {
+					LinkedList <String> playerList = new LinkedList <>();
+					for (Map.Entry <String, Player> entry : playerSet.entrySet()) {
 						playerList.addLast(entry.getKey());
 					}
 					for (String str : countryList) {
@@ -245,21 +247,21 @@ public class InitializePhase extends Observable {
 						Player player = playerSet.get(tmpP);
 						country.setColor(player.getColor());// set country color
 						country.setArmy(1);// set country
-						LinkedList<Country> pcountryList = player.getCountryList();
+						LinkedList <Country> pcountryList = player.getCountryList();
 						player.setArmy(player.getArmy() - 1);
 						pcountryList.addLast(country);
 					}
 					countryList.clear();
 
 				} else {
-					for (Map.Entry<String, Player> entry : playerSet.entrySet()) {
+					for (Map.Entry <String, Player> entry : playerSet.entrySet()) {
 
 						int index = randomC.nextInt(countryList.size());
 						String remove = countryList.get(index);
 						Country country = countries.get(remove);
 						country.setColor(entry.getValue().getColor());// set country color
 						country.setArmy(1);// set country army
-						LinkedList<Country> pcountryList = entry.getValue().getCountryList();
+						LinkedList <Country> pcountryList = entry.getValue().getCountryList();
 						entry.getValue().setArmy(entry.getValue().getArmy() - 1); // update player army
 						pcountryList.addLast(country);
 						countryList.remove(remove);
@@ -270,6 +272,23 @@ public class InitializePhase extends Observable {
 		}
 	}
 
+	public String randomSelect(String key){
+
+		System.out.println(" the player is "+key);
+				Random randomC = new Random();
+
+				int index = randomC.nextInt(playerSet.get(key).getCountryList().size());
+				int find=playerSet.get(key).getCountryList().get(index).getName();
+				String findc=String.valueOf(find);
+
+		System.out.println(" the select country is "+ findc);
+		return findc;
+
+	}
+
+
+
+
 	/**
 	 * This method implements player allocated the number of initial armies.
 	 *
@@ -278,11 +297,12 @@ public class InitializePhase extends Observable {
 	 */
 	public void Startup(String pname, String couname) {
 
-		int parmies = playerSet.get(pname).getArmy() - 1;
-		playerSet.get(pname).setArmy(parmies);
+			int parmies = playerSet.get(pname).getArmy() - 1;
+			playerSet.get(pname).setArmy(parmies);
 
-		int carmies = countries.get(couname).getArmy() + 1;
-		countries.get(couname).setArmy(carmies);
+			int carmies = countries.get(couname).getArmy() + 1;
+			countries.get(couname).setArmy(carmies);
+
 		setChanged();
 		notifyObservers(this);
 

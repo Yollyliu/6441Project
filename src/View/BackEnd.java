@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Observable;
@@ -31,7 +30,6 @@ import Model.Continent;
 import Model.Country;
 import Model.InitializePhase;
 import Model.Player;
-import View.PlayView;
 
 /**
  * <h1>BackEnd</h1> 
@@ -213,7 +211,7 @@ public class BackEnd implements Observer {
 	/**
 	 * This method finds who is next player.
 	 *
-	 * @param currentplayer Current player
+	 * @param currentplayer Current playerInitializePhase.java
 	 * @return Next player.
 	 */
 	public String nextplayer(String currentplayer) {

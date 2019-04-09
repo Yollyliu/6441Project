@@ -12,6 +12,22 @@ public class humanPlayer implements Strategy{
     String behavior="";
     Player player;
 
+    public String getBehavior() {
+        return behavior;
+    }
+
+    public void setBehavior(String behavior) {
+        this.behavior = behavior;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     public humanPlayer(Player player){
         System.out.println(" hello, we are in human player");
         this.player=player;

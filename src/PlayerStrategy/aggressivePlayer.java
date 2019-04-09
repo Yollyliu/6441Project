@@ -22,7 +22,7 @@ public class aggressivePlayer  implements Strategy{
     @Override
     public void Reinforcement(HashMap<String, Player> playerSet,
                               HashMap<String, Country> countries) {
-        System.out.println(" hello, we are in human player reinforcement");
+        System.out.println(" hello, we are in aggressive player reinforcement");
         player.getAllArmies();
 
         Collections.sort(player.getCountryList(), new Comparator <Country>() {
@@ -44,10 +44,10 @@ public class aggressivePlayer  implements Strategy{
 
     @Override
     public String Attack(String attacker, String defender, String mode, int attDices,
-                         int defDices, HashMap<String, Player> playerSet,
-                         HashMap<String, Country> countries,
-                         HashMap<String, Continent> continents) {
-        System.out.println(" hello, we are in human player attack");
+                       int defDices, HashMap<String, Player> playerSet,
+                       HashMap<String, Country> countries,
+                       HashMap<String, Continent> continents) {
+        System.out.println(" hello, we are in aggressive player attack");
 
         LinkedList<String> ans=new LinkedList <>();
         Country strongest=
@@ -85,7 +85,7 @@ public class aggressivePlayer  implements Strategy{
     public void Fortification(Country from, Country to, int move,
                               HashMap<String, Country> countries) {
 
-        System.out.println(" hello, we are in human player fortification");
+        System.out.println(" hello, we are in aggressive player fortification");
 
         Collections.sort(player.getCountryList(), new Comparator <Country>() {
             @Override

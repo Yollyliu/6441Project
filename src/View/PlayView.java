@@ -43,7 +43,7 @@ import Model.Player;
  * @version 3.0
  * @since 2019-03-01
  */
-public class PlayView extends JFrame implements Observer {
+public class PlayView extends JFrame implements Observer  {
 
 	public HashMap<String, Line> lineMap = new HashMap<>();
 	public HashMap<String, Country> countries = new HashMap<>();
@@ -58,6 +58,7 @@ public class PlayView extends JFrame implements Observer {
 	private boolean WIN = false;
 	BackEnd b;
 	InitializePhase observable = new InitializePhase();
+	LinkedList<JLabel> labelsCountry=new LinkedList <>();
 
 	DominationView dominationView;
 
@@ -102,6 +103,8 @@ public class PlayView extends JFrame implements Observer {
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				PlayPane playPane = new PlayPane();
 				frame.add(playPane, BorderLayout.WEST);
+
+
 				observable.addObserver(dominationView);
 				frame.add(dominationView, BorderLayout.EAST);
 				observable.addObserver(dominationView);
@@ -110,7 +113,16 @@ public class PlayView extends JFrame implements Observer {
 				frame.pack();
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
-
+				int flag=-100;
+				System.out.println("mode is "+ mode.getText());
+				if(!mode.getText().equals("human")) {
+					playPane.noHuman();
+				}
+//				try {
+//						Thread.sleep(5000);
+//					}catch (InterruptedException e){
+//				}
+//				labelsCountry.get(flag).setBorder(null);
 			}
 		});
 
@@ -131,7 +143,7 @@ public class PlayView extends JFrame implements Observer {
 			dominationView = new DominationView(observable);
 			observable.addObserver(dominationView);
 			File image = new File("resource/tower.png");
-			LinkedList<JLabel> labelsCountry=new LinkedList <>();
+//			LinkedList<JLabel> labelsCountry=new LinkedList <>();
 
 			for (String key : countries.keySet()) {
 
@@ -209,19 +221,41 @@ public class PlayView extends JFrame implements Observer {
 			color.setBackground(playerSet.get("1").getColor());
 			color.setOpaque(true);
 			add(color);
-			
+
+			JLabel strategy = new JLabel("Strategy: ");
+			add(strategy);
+			strategy.setBounds(1000,70,80,25);
+
+			mode = new JLabel();
+			mode.setText(playerSet.get("1").getMode());
+			add(mode);
+			mode.setBounds(1070,70,80,25);
+
 			// receive armies number
 			JLabel army = new JLabel();
 			army.setText("Army: ");
-			army.setBounds(1000, 60, 80, 25);
+			army.setBounds(1000, 120, 80, 25);
 			add(army);
 			String n = String.valueOf(playerSet.get("1").getArmy());
 			armies = new JLabel(n);
 			armies.setName("armies");
-			armies.setBounds(1100, 70, 80, 25);
+			armies.setBounds(1100, 120, 80, 25);
 			add(armies);
+//			if (!playerSet.get(name.getText()).getMode().equals("Human")) {
+//				System.out.println("this is not human strategy");
+//				int flag=noHuman();
+////
+//				try {
+//					Thread.sleep(5000);
+//				}catch (InterruptedException e){
+//				}
+//				//labelsCountry.get(flag).setBorder(null);
+//
+//			}
 
-		}
+			}
+
+
 
 		/**
 		 * This is a paint function.
@@ -236,6 +270,75 @@ public class PlayView extends JFrame implements Observer {
 				g.drawLine(s.x + 50, s.y + 50, e.x + 50, e.y + 50);
 			}
 
+		}
+
+		public int noHuman() {
+			int flag=-100;
+			System.out.println(" in nohuman");
+			if(currentPhase.equals("start up")){
+				System.out.println(" in start up");
+				String cd=observable.randomSelect(name.getText());
+				System.out.println("random select :"+cd);
+				observable.Startup(name.getText(),cd);
+
+
+				for(int i=0;i<labelsCountry.size();i++) {
+					if (labelsCountry.get(i).getName().equals(cd)) {
+
+						String[] old = labelsCountry.get(i).getText().split(" ");
+						String now = old[0] + " " + countries.get(labelsCountry.get(i).getName()).getArmy();
+						labelsCountry.get(i).setText(now);
+						labelsCountry.get(i).setBorder(new LineBorder(Color.RED));
+						flag=i;
+						break;
+					}
+				}
+				armies.setText(String.valueOf(playerSet.get(name.getText()).getArmy()));
+
+				String nextP = b.nextplayer(name.getText());
+				if (nextP == "") {
+
+					// get into reinforcement phase
+					JOptionPane.showMessageDialog(null, "enter reinforcement phase");
+					System.out.println("enter reinforcement phase");
+					phase.setText("Reinforcement");
+					currentPhase = "Reinforcement";
+					observable.Reinforcement("1");
+					name.setText("1");
+					armies.setText(String.valueOf(playerSet.get("1").getArmy()));
+					color.setBackground(playerSet.get("1").getColor());
+					mode.setText(playerSet.get("1").getMode());
+
+				} else {
+//					try {
+//						Thread.sleep(5000);
+//					}catch (InterruptedException e){
+//					}
+//					labelsCountry.get(flag).setBorder(null);
+					name.setText(nextP);
+					armies.setText(String.valueOf(playerSet.get(nextP).getArmy()));
+					color.setBackground(playerSet.get(nextP).getColor());
+					mode.setText(playerSet.get(nextP).getMode());
+					if(!playerSet.get(name.getText()).getMode().equals("Human")){
+
+					}
+				}
+
+				//TestSleepMethod1 t1=new TestSleepMethod1();
+				//t1.start();
+
+
+
+
+			}else if(currentPhase.equals("Reinforcement")){
+				observable.Reinforcement(name.getText());
+			}else if(currentPhase.equals("Attack")){
+				observable.attackPhase("0","0","All_out",0,0);
+
+			}else if(currentPhase.equals("Fortification")){
+				observable.Fortification("0","0",0);
+			}
+			return flag;
 		}
 
 		/**
@@ -262,7 +365,7 @@ public class PlayView extends JFrame implements Observer {
 			 * @param e The component of mouse click.
 			 */
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(MouseEvent e)  {
 
 				String click = e.getComponent().getName();
 				if (click.equals("phase")) {
@@ -271,6 +374,7 @@ public class PlayView extends JFrame implements Observer {
 					if (phase.getText().equals("Reinforcement")) {
 						System.out.println("Reinforcement");
 						armies.setText(String.valueOf(playerSet.get(name.getText()).getArmy()));
+						mode.setText(playerSet.get(name.getText()).getMode());
 
 					} else if (phase.getText().equals("Attack")) {
 						start = true;
@@ -298,9 +402,11 @@ public class PlayView extends JFrame implements Observer {
 
 						} else {
 							armies.setText(String.valueOf(playerSet.get(nextP).getArmy()));
+							mode.setText(playerSet.get(name.getText()).getMode());
 						}
 						name.setText(nextP);
 						color.setBackground(playerSet.get(nextP).getColor());
+						mode.setText(playerSet.get(nextP).getMode());
 
 					}
 
@@ -336,11 +442,16 @@ public class PlayView extends JFrame implements Observer {
 								name.setText("1");
 								armies.setText(String.valueOf(playerSet.get("1").getArmy()));
 								color.setBackground(playerSet.get("1").getColor());
+								mode.setText(playerSet.get("1").getMode());
 
 							} else {
 								name.setText(nextP);
 								armies.setText(String.valueOf(playerSet.get(nextP).getArmy()));
 								color.setBackground(playerSet.get(nextP).getColor());
+								mode.setText(playerSet.get(nextP).getMode());
+								if(!playerSet.get(nextP).getMode().equals("Human")){
+									noHuman();
+								}
 							}
 
 						}
@@ -471,6 +582,9 @@ public class PlayView extends JFrame implements Observer {
 
 			}
 
+
+
+
 			/**
 			 *
 			 * Check whether current player click right country or not.
@@ -535,6 +649,10 @@ public class PlayView extends JFrame implements Observer {
 					JOptionPane.showMessageDialog(null, "please select your own countries");
 				}
 			}
+
+
+
+
 
 			/**
 			 * This method check whether current player click right country or not.
@@ -731,4 +849,17 @@ public class PlayView extends JFrame implements Observer {
 
 	}
 
+
+}
+class TestSleepMethod1 extends Thread {
+	public void run() {
+		for (int i = 1; i < 5; i++) {
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				System.out.println(e);
+			}
+			System.out.println(i);
+		}
+	}
 }

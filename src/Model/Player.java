@@ -115,7 +115,7 @@ public class Player {
 	 * This method modifies the number of armies player having.
 	 *
 	 * @param army the number of armies.
-	 *
+	 * 
 	 */
 	public void setArmy(int army) {
 		this.army = army;
@@ -159,7 +159,7 @@ public class Player {
 
 	/**
 	 * This method obtains the times of changing card.
-	 *
+	 * 
 	 * @return The times of changing card.
 	 */
 	public int getChangeCardTime() {
@@ -168,7 +168,7 @@ public class Player {
 
 	/**
 	 * This method modifies the times of changing card.
-	 *
+	 * 
 	 * @param changeCardTime The times of changing card.
 	 */
 	public void setChangeCardTime(int changeCardTime) {
@@ -179,7 +179,7 @@ public class Player {
 	//////////////////////// Reinforcement /////////////////////////////////////
 
 	public void reinforcement(HashMap<String, Player> playerSet,
-							  HashMap<String, Country> countries){
+			HashMap<String, Country> countries){
 
 		this.strategy.Reinforcement(playerSet,countries);
 	}
@@ -212,8 +212,8 @@ public class Player {
 	}
 
 	public void updateReinforcement(int country, int army,
-									HashMap<String, Player> playerSet,
-									HashMap<String, Country> countries) {
+						   HashMap<String, Player> playerSet,
+						   HashMap<String, Country> countries) {
 
 
 		for(int i=0;i<countryList.size();i++){
@@ -266,10 +266,10 @@ public class Player {
 
 
 	public String attack(String attacker, String defender, String mode,
-						 int attDices, int defDices,
-						 HashMap<String, Player> playerSet,
-						 HashMap<String, Country> countries,
-						 HashMap<String, Continent> continents){
+					   int attDices, int defDices,
+					   HashMap<String, Player> playerSet,
+					   HashMap<String, Country> countries,
+					   HashMap<String, Continent> continents){
 		System.out.println("we are at attack in player");
 
 		String result=this.strategy.Attack(attacker, defender, mode,
@@ -434,6 +434,7 @@ public class Player {
 
 
 	public void agrressiveStartUp(HashMap<String, Country> countries){
+		System.out.println("we are in aggressive");
 		HashMap<Integer,Integer> frontNum=new HashMap <>();
 		frontNum=Front(countries);
 		int max=-999;

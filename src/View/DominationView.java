@@ -150,7 +150,7 @@ public class DominationView extends JLayeredPane implements Observer {
 		sb.append("            ");
 		sb.append(getTotalArmy(key));
 		String allInfor = sb.toString();
-		System.out.println("Information in for " + allInfor);
+		//System.out.println("Information in for " + allInfor);
 		return allInfor;
 	}
 
@@ -178,7 +178,7 @@ public class DominationView extends JLayeredPane implements Observer {
 		for (String key : cal.keySet()) {
 			continent = continent + key + " ";
 		}
-		System.out.println("The continent owned is " + continent);
+		//System.out.println("The continent owned is " + continent);
 		return continent;
 	}
 
