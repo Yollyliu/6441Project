@@ -297,15 +297,13 @@ public class InitializePhase extends Observable {
 	 */
 	public void Startup(String pname, String couname) {
 
-		if(playerSet.get(pname).getArmy()>0) {
+
 			int parmies = playerSet.get(pname).getArmy() - 1;
 			playerSet.get(pname).setArmy(parmies);
 
 			int carmies = countries.get(couname).getArmy() + 1;
 			countries.get(couname).setArmy(carmies);
-		}else{
-			System.out.println("no army anymore");
-		}
+
 
 		setChanged();
 		notifyObservers(this);
@@ -318,9 +316,10 @@ public class InitializePhase extends Observable {
 	 * @param player Player name.
 	 */
 	public String Reinforcement(String player) {
+		System.out.println();
 		System.out.println("in initialize phase reinforcement");
-		String c=playerSet.get(player).reinforcement(playerSet,countries);
-		System.out.println("the lucky country is "+c);
+		String c=playerSet.get(player).reinforcement(playerSet,countries,continents);
+		//System.out.println("the lucky country is "+c);
 		System.out.println("done well in Reinforcement");
 		System.out.println();
 		System.out.println();
@@ -384,8 +383,9 @@ public class InitializePhase extends Observable {
 							  int attDices, int defDices,String strategy) {
 
 		System.out.println("we at attackPhase in initialize");
-		System.out.println("the attacker is :"+attacker);  //country
-		System.out.println("the defender is :"+defender);  //country
+		System.out.println("Attacker is :"+attacker);  //country
+		System.out.println("Defender is :"+defender);  //country
+		System.out.println("Strategy is :"+strategy);
 		System.out.println();
 		System.out.println();
 		System.out.println();
@@ -469,62 +469,81 @@ public class InitializePhase extends Observable {
 	 */
 	public void Fortification(String from, String to, int move,String mode) {
 		String player="";
+		for (String players : playerSet.keySet()) {
+			if (playerSet.get(players).getColor().equals(countries.get(from).getColor())) {
+				player = players;
+				break;
+			}
+		}
 
 		if(mode.equalsIgnoreCase("human")) {
-			System.out.println("InitializePhase human");
+			System.out.println("InitializePhase human Fortificaiton");
 			Country fromc = countries.get(from);
 			Country toc = countries.get(to);
-			for (String players : playerSet.keySet()) {
-				if (playerSet.get(players).getColor().equals(fromc.getColor())) {
-					player = players;
-				}
-			}
+
 			playerSet.get(player).fortification(fromc, toc, move, countries);
 		}else{
 
-			System.out.println("InitializePhase no human");
+			System.out.println("InitializePhase no human Fortificaiton");
 			String s= playerSet.get(from).fortification(countries.get(0), countries.get(1), move, countries);
+			System.out.println("////////////// get fortification of result in InitializePhase ////////////");
+			System.out.println("get result of fortification no human, result is : "+s);
 			String[] all=s.split(" ");
-			Country one=countries.get(all[0]);
-			Country two=countries.get(all[1]);
-			updateFortification(one,two,countries);
+            System.out.println(" The result length is "+ all.length);
+            if(all.length==2) {
+				Country one = countries.get(all[0]);       //最符合要兵条件的国家
+				Country two = countries.get(all[1]);        //兵多的国家
+				if(two.getArmy()>1) {
+					updateFortification(one, two,player);
+				}else{
+					System.out.println("The second country army no more than 1");
+				}
+			}else{
+				System.out.println(" Cannot find satisfied two country in InitializePhase no human Fortification");
+			}
 
 		}
 
 		setChanged();
 		notifyObservers(this);
-
 	}
 
 
-	public void updateFortification(Country one, Country two,
-				HashMap<String, Country> countries){
+	public void updateFortification(Country one, Country two,String player){
 
-			int first=one.getArmy()+two.getArmy()-1;
-			int army=two.getArmy()-1;
-			for(String key:countries.keySet()) {
-				if (Integer.valueOf(key)==one.getName()) {
-					countries.get(key).setArmy(first);
-				}
-				if (Integer.valueOf(key)==two.getName()) {
-					countries.get(key).setArmy(1);
-				}
+        System.out.println("************* Begin of updateFortification in InitializePhase" +
+                "*********************");
+        int first=one.getArmy()+two.getArmy()-1;
+        System.out.println("There are :"+first +" can move ");
+        int army=1;
+
+		countries.get(String.valueOf(one.getName())).setArmy(first);
+		countries.get(String.valueOf(two.getName())).setArmy(army);
+		int len=playerSet.get(player).getCountryList().size();
+		for(int i=0;i<len;i++){
+			if(playerSet.get(player).getCountryList().get(i).getName()==one.getName()){
+				playerSet.get(player).getCountryList().get(i).setArmy(first);
+                System.out.println("Update in playSet for"+one.getName());
+            }
+
+			if(playerSet.get(player).getCountryList().get(i).getName()==two.getName()){
+				playerSet.get(player).getCountryList().get(i).setArmy(army);
+                System.out.println("Update in playSet for "+two.getName());
 			}
+		}
 
-			System.out.println("done update fortificatio in player from:");
+        System.out.println("done update fortificatio in player from:");
 			System.out.println("country one : "+ one.getName()+
-					" get amry from country : " +two.getName()+" For " +army);
-			System.out.println("country one: "+ one.getName()+" army: "+one.getArmy());
-			System.out.println("country two: "+two.getName()+" army: "+two.getArmy());
+					" get amry from country : " +two.getName()+" For " + first);
+
+			System.out.println("country one: "+ one.getName()
+					+" army: "+countries.get(String.valueOf(one.getName())).getArmy());
+
+			System.out.println("country two: "+
+					two.getName()+" army: "+countries.get(String.valueOf(two.getName())).getArmy());
 			System.out.println();
 			System.out.println();
 		}
-
-//		int start = countries.get(from).getArmy() - move;
-//		countries.get(from).setArmy(start);
-//
-//		int end = countries.get(to).getArmy() + move;
-//		countries.get(to).setArmy(end);
 
 
 	/**
@@ -544,6 +563,7 @@ public class InitializePhase extends Observable {
 			list = playerSet.get(player).getCardList();
 			list.add(c);
 			playerSet.get(player).setCardList(list);
+			System.out.println("you got infantry card");
 			JOptionPane.showMessageDialog(null, "you got infantry card");
 			break;
 		case 2:
@@ -554,6 +574,7 @@ public class InitializePhase extends Observable {
 			list.add(c);
 
 			playerSet.get(player).setCardList(list);
+			System.out.println("You got cavalry card");
 			JOptionPane.showMessageDialog(null, "you got cavalry card");
 			break;
 		case 3:
@@ -564,6 +585,7 @@ public class InitializePhase extends Observable {
 			list.add(c);
 
 			playerSet.get(player).setCardList(list);
+			System.out.println("you got artillery card");
 			JOptionPane.showMessageDialog(null, "you got artillery card");
 			break;
 

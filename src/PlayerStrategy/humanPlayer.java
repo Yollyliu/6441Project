@@ -37,9 +37,10 @@ public class humanPlayer implements Strategy{
 
     @Override
     public String Reinforcement(HashMap<String, Player> playerSet,
-                              HashMap<String, Country> countries) {
+                              HashMap<String, Country> countries,
+                                HashMap<String, Continent> continents) {
         System.out.println(" hello, we are in human player reinforcement");
-        player.getAllArmies();
+        player.getAllArmies(continents);
         return "";
     }
 

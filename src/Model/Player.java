@@ -179,18 +179,19 @@ public class Player {
 	//////////////////////// Reinforcement /////////////////////////////////////
 
 	public String reinforcement(HashMap<String, Player> playerSet,
-			HashMap<String, Country> countries) {
+			HashMap<String, Country> countries,
+								HashMap<String, Continent> continents) {
 
-		String c=this.strategy.Reinforcement(playerSet,countries);
+		String c=this.strategy.Reinforcement(playerSet,countries,continents);
 		return c;
 	}
 
 
-	public void getAllArmies() {
+	public void getAllArmies(HashMap<String, Continent> continents) {
 
 		// update armies number for each player
 		int system = SystemArmy();
-		int continent = ContinentArmy();
+		int continent = ContinentArmy(continents);
 		int card = 0;
 		setArmy(system + continent + card);
 	}
@@ -243,7 +244,7 @@ public class Player {
 	 *
 	 * @return Control value.
 	 */
-	public int ContinentArmy() {     //暂时想不出来怎么改
+	public int ContinentArmy(HashMap<String, Continent> continents) {     //暂时想不出来怎么改
 		int n = 0;
 		LinkedList<Country> captital =getCountryList();
 		HashMap<String, Integer> cal = new HashMap<>();
@@ -253,13 +254,13 @@ public class Player {
 
 			listB.add(c);
 		}
-//		for (int i = 0; i < listB.size(); i++) {
-//			int temp = Collections.frequency(listB, listB.get(i));
-//			if (continents.get(listB.get(i)).getCountryList().size() == temp) {
-//
-//				cal.put(listB.get(i), continents.get(listB.get(i)).getConvalue());
-//			}
-//		}
+		for (int i = 0; i < listB.size(); i++) {
+			int temp = Collections.frequency(listB, listB.get(i));
+			if (continents.get(listB.get(i)).getCountryList().size() == temp) {
+
+				cal.put(listB.get(i), continents.get(listB.get(i)).getConvalue());
+			}
+		}
 		for (String key : cal.keySet()) {
 			n = n + cal.get(key);
 		}
@@ -492,34 +493,21 @@ public class Player {
 
 	public void transfer(String record, Country att, Country def,
 						 HashMap<String, Country> countries) {
-		boolean flag=false;
+
 		System.out.println("*************** In transfer of Player ************");
+		System.out.println();
 		String[] readrecord = record.split(" ");
-		if (readrecord[1].equals("0")) {//update countries information
-
-			if (readrecord[0].equals(att.getName())) {
-				System.out.println( "attacker Player "+ att.getName()+" win");
-				if (!readrecord[2].equals("0")) {
-					flag = true;
-				}
-			}
-			else if (readrecord[0].equals("-1")) {
-
-				System.out.println("This is a draw.");
-			}
-			else {
-
-				System.out.println( "defender Player"+ def.getName()+" win");
-			}
-
+		int afterdef=-100;
+		int aftatt=-100;
+		if(readrecord[1].equalsIgnoreCase("0")){
+			System.out.println("This will never reach, this is a debug !");
+			System.out.println("This is in transfer in Player");
+			afterdef=1;
+			aftatt=att.getArmy()-1;
+		}else{
+			afterdef=Integer.valueOf(readrecord[1]);
+			aftatt=att.getArmy()-afterdef;
 		}
-//		int min=Integer.valueOf(readrecord[1]);
-//		System.out.println(" Army need to transfer in Player is "+ min);
-//
-//		int afterdef=min;
-//		int aftatt=att.getArmy()-min;
-		int afterdef=Integer.valueOf(readrecord[2]);
-		int aftatt=Integer.valueOf(readrecord[0]);
 		for(int k=0;k<getCountryList().size();k++) {
 
 			if (getCountryList().get(k).getName() == def.getName()) {
@@ -535,9 +523,13 @@ public class Player {
 		for(String key:countries.keySet()) {
 			if (Integer.valueOf(key)==att.getName()) {
 				countries.get(key).setArmy(aftatt);
+				System.out.println("After transfer: att: "+ countries.get(key).getName()+"  Army: "+countries.get(key).getArmy());
+
 			}
 			if (Integer.valueOf(key)==def.getName()) {
 				countries.get(key).setArmy(afterdef);
+				System.out.println("After transfer: def: "+ countries.get(key).getName()+"  Army: "+countries.get(key).getArmy());
+
 			}
 		}
 

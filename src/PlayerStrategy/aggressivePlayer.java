@@ -21,10 +21,12 @@ public class aggressivePlayer  implements Strategy{
     }
     @Override
     public String Reinforcement(HashMap<String, Player> playerSet,
-                              HashMap<String, Country> countries)
+                              HashMap<String, Country> countries,
+                                HashMap<String, Continent> continents)
              {
+                 System.out.println();
         System.out.println(" hello, we are in aggressive player reinforcement");
-        player.getAllArmies();
+        player.getAllArmies(continents);
         System.out.println("new army is "+ player.getArmy());
 
 //        Collections.sort(player.getCountryList(), new Comparator <Country>() {
@@ -46,15 +48,12 @@ public class aggressivePlayer  implements Strategy{
         strongest.setArmy(totalArmy);
         player.setArmy(0);
 
-        player.updateReinforcement(strongest.getName(),
-                totalArmy,playerSet,countries);
+        player.updateReinforcement(strongest.getName(), totalArmy,playerSet,countries);
 
-        System.out.println("the strongest country is "+ String.valueOf(strongest.getName()));
-                 try{
-                     sleep(Sleep.getSleepTime());
-                 } catch (InterruptedException e) {
-                     System.out.println(e);
-                 }
+        System.out.println("the strongest/lucky country is "+ String.valueOf(strongest.getName()));
+        System.out.println();
+        System.out.println();
+
         return String.valueOf(strongest.getName());
 
     }
@@ -72,23 +71,41 @@ public class aggressivePlayer  implements Strategy{
         System.out.println(" **********hello, we are in aggressive player attack *********");
 
         LinkedList<String> ans=new LinkedList <>();
-        Country strongest=
-                player.getCountryList().stream().max(
-                        Comparator.comparing(Country::getArmy)).get();
-
+        Country strongest=new Country();
+        boolean flag=true;
         LinkedList<Country> allDefenders=new LinkedList <>();
 
-        String[] neib=strongest.getCountryList().split(" ");
-        for(int i=0;i<neib.length;i++){
-            if(!countries.get(neib[i]).getColor().equals(player.getColor())){
-                allDefenders.add(countries.get(neib[i]));
+
+
+        //找到最强的国家，更行所有的，
+        while(flag) {
+            //拿到最强国家的排序
+            List <Country> allCountry = getStrongestCountry(countries);
+            if (allCountry.get(0).getArmy() < 2) {
+                System.out.println("cannot attack as no country army >=2");
+                return ans;
+
             }
+            for (int i = 0; i < allCountry.size(); i++) {
+                strongest = allCountry.get(i);
+
+                LinkedList<Country> curAllDefenders = isStrongestWithNeib(strongest, countries);
+                if (curAllDefenders.size() > 0) {
+                    System.out.println("Before: Attack country is "+String.valueOf(strongest.getName())+
+                            " Army : "+strongest.getArmy());
+                    allDefenders=curAllDefenders;
+                    System.out.println("The neib size of strongest counntry : "+allDefenders.size());
+                    flag=false;
+                    break;
+                }
+
+            }
+
         }
-        System.out.println("Before: Attack country is "+String.valueOf(strongest.getName())+
-        " Army : "+strongest.getArmy());
 
         ans.add(String.valueOf(strongest.getName()));
         if(allDefenders.size()>0) {
+            System.out.println("the size");
             int i=0;
                     while (strongest.getArmy() >= 2 && i<allDefenders.size()) {
 
@@ -104,12 +121,24 @@ public class aggressivePlayer  implements Strategy{
                         System.out.println();
                         System.out.println();
                         System.out.println("the attack information is "+ cur);
-                        player.transfer(cur, strongest, allDefenders.get(i), countries);
+                        String[] readrecord = cur.split(" ");
+                        if(readrecord[0].equals(player.getPlayerName())) {
+                            System.out.println("attacker Player " + aggressiveAttack + " win");
+                            if(Integer.valueOf(readrecord[1])!= 0 ) {
+                                player.transfer(cur, strongest, allDefenders.get(i), countries);
+                            }
+                        }
+                        else if (readrecord[0].equals("-1")) {
+                            System.out.println("This is a draw. No need to transfer");
+                        }
+                        else {
+                            System.out.println("defender Country " + aggressiveDefend + " win");
+                        }
+
                         System.out.println();
                         System.out.println();
 
-
-                        System.out.println("After:  aggressiveAttacker country is " + aggressiveDefend +
+                        System.out.println("After:  aggressiveAttacker country is " + aggressiveAttack +
                                 " Army : " + strongest.getArmy());
                         System.out.println("After:  aggressiveDefender country is " + aggressiveDefend +
                                 " Army : " + allDefenders.get(i).getArmy());
@@ -124,19 +153,38 @@ public class aggressivePlayer  implements Strategy{
                         }
                         i++;
                     }
+        }else{
+            System.out.println("There is no neibs in attack country");
         }
-        System.out.println("the defenders in aggressive attack are :");
+       // System.out.println("the defenders in aggressive attack are :");
         //System.out.println(ans);
 
         return ans;
 
     }
 
-    public LinkedList<Country> getStrongest(HashMap<String, Country> countries){
-        Country strongest=
-                player.getCountryList().stream().max(
-                        Comparator.comparing(Country::getArmy)).get();
 
+    public List<Country> getStrongestCountry(
+            HashMap<String, Country> countries){
+
+        LinkedList<Country> allCountry=new LinkedList <>();
+        for(String key: countries.keySet()){
+            allCountry.add(countries.get(key));
+        }
+
+        List<Country> newCountryList = allCountry.stream()
+                .sorted((c1, c2) -> {
+                    if (c2.getArmy() - c1.getArmy() > 0 ) return 1;
+                    else if (c2.getArmy() - c1.getArmy() == 0) return 0;
+                    else return -1; })
+                .collect(Collectors.toList());
+
+        return newCountryList;
+
+    }
+
+    public LinkedList<Country> isStrongestWithNeib(Country strongest,
+                                       HashMap<String, Country> countries){
         LinkedList<Country> allDefenders=new LinkedList <>();
 
         String[] neib=strongest.getCountryList().split(" ");
@@ -145,10 +193,16 @@ public class aggressivePlayer  implements Strategy{
                 allDefenders.add(countries.get(neib[i]));
             }
         }
-        allDefenders.add(strongest);
-        return allDefenders;
+        if(allDefenders.size()>0){
+            System.out.println("Strongest Country "+strongest.getName()+" has neib");
 
+        }else{
+            System.out.println("Strongest Country "+ strongest.getName()+ "has no neib ");
+
+        }
+        return allDefenders;
     }
+
 
 
     ////////////////////////////////Fortification///////////////////////////
@@ -156,18 +210,9 @@ public class aggressivePlayer  implements Strategy{
     public String Fortification(Country from, Country to, int move,
                               HashMap<String, Country> countries) {
 
+        System.out.println();
+        System.out.println();
         System.out.println(" hello, we are in aggressive player fortification");
-
-//        Collections.sort(player.getCountryList(), new Comparator <Country>() {
-//            @Override
-//            public int compare(Country o1, Country o2) {
-//                return Collator.getInstance().compare(o1.getArmy(), o2.getArmy());
-//            }
-//        } );
-//        Country strongest=
-//                player.getCountryList().stream().max(
-//                        Comparator.comparing(Country::getArmy)).get();
-
 
         String s="";
         List<Country> newCountryList = player.getCountryList().stream()
@@ -181,36 +226,49 @@ public class aggressivePlayer  implements Strategy{
         frontNumb=player.Front(countries);
         int length=newCountryList.size();
 
+        System.out.println();
         for(int i=0;i<length;i++) {
 
             Country one = newCountryList.get(i);
 
             if (frontNumb.containsKey(one.getName())) {
+                System.out.println("Country "+ one.getName()+ " has neib to another player," +
+                        " numb is "+ frontNumb.get(one.getName())+" Army is "+one.getArmy());
+
 
                 for (int j = 0; j < length; j++) {
 
-                    if (i != j) {
+                    if ((i != j) && newCountryList.get(j).getArmy()>1) {
 
                         Country two = newCountryList.get(j);
+                        System.out.println();
+
                         System.out.println("This is in agreesive Player fortification:");
                         System.out.println("Country one is "+ one.getName()+" Army is "+one.getArmy());
                         System.out.println("Country two is "+two.getName()+ " Army is "+two.getArmy());
-
-                        System.out.println();
-                        System.out.println();
+                        System.out.println("Path between two countries are :");
                         if (player.canTransfer(one.getName(), two.getName(), countries)) {
 
+                            System.out.println("There is a path between "+ one.getName()+
+                            " and "+two.getName());
                            // player.updateFortification(one, two, countries);
                             s=one.getName()+" "+two.getName();
+                            System.out.println("Choice of two countries are : "+s);
                             return s;
+                        }else{
+                            System.out.println("No path between them");
+                            System.out.println();
+                            System.out.println();
                         }
                     }
                 }
+            }else{
+                System.out.println("Country "+ one.getName()+ " is not neib to another player, " +
+                        " Army is "+one.getArmy());
             }
         }
         return s;
     }
-
 
 
 }

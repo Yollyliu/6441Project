@@ -22,7 +22,8 @@ public class randomPlayer implements Strategy{
 
     @Override
     public String Reinforcement(HashMap<String, Player> playerSet,
-                              HashMap<String, Country> countries)
+                              HashMap<String, Country> countries,
+                                HashMap<String, Continent> continents)
             {
 
         return "";

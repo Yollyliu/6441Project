@@ -387,6 +387,9 @@ public class BackEnd implements Observer {
 	 * @return true if the player can attack.
 	 */
 	public boolean canAttack(String player) {
+		System.out.println("**************Begin of canAttack " +
+				" in BackEnd *************************");
+
 		boolean canAttack = false;
 		LinkedList<Country> countrylist = playerSet.get(player).getCountryList();
 		for (int i = 0; i < countrylist.size(); i++) {
@@ -400,7 +403,46 @@ public class BackEnd implements Observer {
 				}
 			}
 		}
+		System.out.println();
+		System.out.println("The result of attack is "+ canAttack);
+		System.out.println();
+		System.out.println("**************End of canAttack " +
+				" in BackEnd *************************");
 
 		return canAttack;
+	}
+
+	public String nextPlayerNoStartUp(String currentplayer){
+
+		String next = "";
+		int size = playerSet.size();
+		int[] a = new int[size];
+		int cup = Integer.valueOf(currentplayer);
+		int temp;
+		if (cup == size) {
+			temp = 1;
+		} else {
+			temp = cup + 1;
+		}
+
+		for (int i = 0; i < a.length; i++) {
+			if (temp == a.length + 1) {
+				temp = 1;
+			}
+			a[i] = temp;
+			temp++;
+
+		}
+		for (int i = 0; i < a.length; i++) {
+
+			if (playerSet.get(String.valueOf(a[i])).getCountryList().size() > 0) {
+				next = String.valueOf(a[i]);
+				break;
+			}
+
+		}
+
+		return next;
+
 	}
 }

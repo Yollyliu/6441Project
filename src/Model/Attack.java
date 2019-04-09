@@ -251,12 +251,12 @@ public class Attack {
 	 *
 	 * @return A result of attack.
 	 */
-	public String attacking(String behavioir) {
+	public String attacking(String behavior) {
 
 		switch (mode) {
 		case "All_Out":
 			System.out.println("Get into All_Out mode.");
-			return allOut(behavioir);
+			return allOut();
 		case "One_Time":
 			System.out.println("Get into One_Time mode.");
 			return oneTime();
@@ -331,7 +331,7 @@ public class Attack {
 	 *
 	 * @return A result of all out attack.
 	 */
-	public String allOut(String behavoir) {
+	public String allOut() {
 
 		System.out.println("This is an " + this.mode + "mode: ");
 		String result = "";
@@ -350,20 +350,15 @@ public class Attack {
 		}
 
 		result = findWinner(0, 0);
+		System.out.println(" attack result = winner playerName  + minTransArmy + MaxTransArmy ");
 
 		int [] range=intervalNum();
-//		if(!behavoir.equals("Human")) {
-//		  range[0]=intervalNum()[0];
-//		  range[1]=1;
-//
-//		}else {
-//			 range[0] = intervalNum()[0];
-//			 range[1]=intervalNum()[1];
-//		}
-
 
 		if (countries.get(defendCountry).getArmy() == 0) {
-			updating(range);
+			System.out.println("DefendCountry Army==0 at All_Out in Attack, defender lose !");
+			updating(range);  //如果已经update，当range 0 等于 1
+			System.out.println(" updating in Attack update all except armies");
+			System.out.println(" if range start with 0, then already update");
 		}
 
 		result = result + " " + String.valueOf(range[0]) + " " + String.valueOf(range[1]);
@@ -494,6 +489,7 @@ public class Attack {
 	 */
 	private String findWinner(int att, int def) {
 
+		System.out.println("********** Begin of FindWinner in Attack **************");
 		switch (this.mode) {
 		case "One_Time":
 			System.out.println("Armies compare" + att + " " + def + " " + countries.get(attackCountry).getArmy() + " "
@@ -517,15 +513,19 @@ public class Attack {
 				}
 			}
 		case "All_Out":
+			System.out.println("This is All_Out mode in findWinner in Attack");
 			if (countries.get(defendCountry).getArmy() == 0) {
+				System.out.println("Winner is "+ findPlayer(attackCountry).getPlayerName());
 				return findPlayer(attackCountry).getPlayerName();
 			} else if (countries.get(attackCountry).getArmy() == 1) {
+				System.out.println(" Winner is "+ findPlayer(defendCountry).getPlayerName());
 				return findPlayer(defendCountry).getPlayerName();
 			}
 		default:
 			System.out.println("Find winner failure!");
 			break;
 		}
+		System.out.println("********** End of FindWinner in Attack **************");
 
 		return null;
 	}
@@ -567,6 +567,11 @@ public class Attack {
 	 */
 	public void updating(int[] range) {
 
+		System.out.println("Updating in Attack");
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println("Updating Card");
 //		attacker can get a card;
 		this.HAS_CARD = true;
 		Player attPlayer = findPlayer(attackCountry);
@@ -601,7 +606,11 @@ public class Attack {
 		for (Card card : defPlayer.getCardList()) {
 			System.out.println(card.getName());
 		}
-	
+		System.out.println();
+		System.out.println();
+		System.out.println();
+
+		System.out.println("Updating country color in playSet and countries");
 //      update information, like Player, country
 		Country country = countries.get(defendCountry);
 		country.setColor(countries.get(attackCountry).getColor());
@@ -620,6 +629,7 @@ public class Attack {
 		}
 
 		if (range[0] == 0 && range[1] > 0) {
+			System.out.println("The first of range is 0");
 			transferArmy(range[1]);
 		}
 
