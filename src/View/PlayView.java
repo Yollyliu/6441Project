@@ -1,20 +1,13 @@
 package View;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.Timer;
 import javax.imageio.ImageIO;
@@ -34,7 +27,7 @@ import static java.lang.Thread.sleep;
  * <h1>PlayView</h1> It is Play Game main View have three function
  * (reinforcement, attack, fortification)
  *
- * @author chenwei_song
+ * @author chenwei_song,youlin_liu
  * @version 3.0
  * @since 2019-03-01
  */
@@ -108,19 +101,77 @@ public class PlayView extends JFrame implements Observer  {
 				frame.pack();
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
-				int flag=-100;
+
 				System.out.println("This is in constructor of PlayView, mode is "+ mode.getText());
 				if(!mode.getText().equalsIgnoreCase("human")) {
 					playPane.noHuman();
 				}
-//				try {
-//						Thread.sleep(5000);
-//					}catch (InterruptedException e){
-//				}
-//				labelsCountry.get(flag).setBorder(null);
+
+
+				JMenuBar menuBar = new JMenuBar();
+				frame.setJMenuBar(menuBar);
+				JMenu menu1 = new JMenu("File");
+				menuBar.add(menu1);
+				JMenuItem saveMI = new JMenuItem("Save");
+				JMenuItem loadMI = new JMenuItem("Load");
+				menu1.add(saveMI);
+				menu1.add(loadMI);
+
+				loadMI.addActionListener(new LoadAction(playPane));
+				saveMI.addActionListener(new SaveAction(playPane));
 			}
 		});
 
+	}
+
+	private class LoadAction implements ActionListener, Serializable{
+		PlayPane playPane;
+
+		public LoadAction(PlayPane playPane) {
+			this.playPane = playPane;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			FileDialog fileDialog = new FileDialog(PlayView.this, "Open", FileDialog.LOAD);
+			fileDialog.setVisible(true);
+			String dir = fileDialog.getDirectory();
+			String fileName = fileDialog.getFile();
+			String filePath = dir + fileName;
+
+			if (fileName != null && fileName.trim().length() != 0){
+				File file = new File(filePath);
+				playPane.loadGame(file);
+			} else {
+				JOptionPane.showConfirmDialog(PlayView.this, "Failed", "Risk Game", JOptionPane.DEFAULT_OPTION);
+			}
+		}
+	}
+
+	private class SaveAction implements ActionListener, Serializable {
+		PlayPane playPane;
+
+		public SaveAction(PlayPane playPane) {
+			this.playPane = playPane;
+		}
+
+
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			FileDialog fileDialog = new FileDialog(PlayView.this, "Save", FileDialog.SAVE);
+			fileDialog.setVisible(true);
+			String dir = fileDialog.getDirectory();
+			String fileName = fileDialog.getFile();
+			String filePath = dir + fileName;
+
+			if (fileName != null && fileName.trim().length() != 0){
+				File file = new File(filePath);
+				playPane.saveGame(file);
+			} else {
+				JOptionPane.showConfirmDialog(PlayView.this, "Failed", "Risk Game", JOptionPane.DEFAULT_OPTION);
+			}
+		}
 	}
 
 	/**
@@ -130,6 +181,140 @@ public class PlayView extends JFrame implements Observer  {
 	public class PlayPane extends JLayeredPane {
 
 		iconHandler ih = new iconHandler();
+
+		public void saveGame(File file){
+			try{
+				FileOutputStream fileOutputStream= new FileOutputStream(file);
+				ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+				objectOutputStream.writeObject(lineMap);
+				objectOutputStream.writeObject(countries);
+				objectOutputStream.writeObject(continents);
+				objectOutputStream.writeObject(playerSet);
+				objectOutputStream.writeObject(name);
+				objectOutputStream.writeObject(color);
+				objectOutputStream.writeObject(armies);
+				objectOutputStream.writeObject(currentPhase);
+				objectOutputStream.writeObject(phase);
+				objectOutputStream.writeObject(labelsCountry);
+				objectOutputStream.writeObject(b);
+
+				objectOutputStream.close();
+				fileOutputStream.close();
+
+				JOptionPane.showConfirmDialog(frame, "Save Successfully", "RiskGame",JOptionPane.DEFAULT_OPTION);
+			} catch (Exception e){
+				JOptionPane.showConfirmDialog(frame, e.toString() + "\nSave Failed", "RiskGame", JOptionPane.DEFAULT_OPTION);
+			}
+		}
+
+		public void loadGame(File file){
+			try{
+				HashMap<String, Line> saveLineMap = new HashMap<>();
+				HashMap<String, Country> saveCountries = new HashMap<>();
+				HashMap<String, Continent> saveContinents = new HashMap<>();
+				HashMap<String, Player> savePlayerSet = new HashMap<>();
+				JLabel saveName;
+				JLabel saveColor;
+				JLabel saveArmies;
+				String saveCurrentPhase;
+				JButton savePhase;
+				LinkedList<JLabel> saveLabelsCountry;
+				BackEnd saveB;
+
+
+				FileInputStream fileInputStream = new FileInputStream(file);
+				ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+				saveLineMap = (HashMap<String, Line>) objectInputStream.readObject();
+				saveCountries = (HashMap<String, Country>) objectInputStream.readObject();
+				saveContinents = (HashMap<String, Continent>) objectInputStream.readObject();
+				savePlayerSet = (HashMap<String, Player>) objectInputStream.readObject();
+				saveName = (JLabel) objectInputStream.readObject();
+				saveColor = (JLabel) objectInputStream.readObject();
+				saveArmies = (JLabel) objectInputStream.readObject();
+				saveCurrentPhase = (String) objectInputStream.readObject();
+				savePhase = (JButton) objectInputStream.readObject();
+				saveLabelsCountry = (LinkedList<JLabel>) objectInputStream.readObject();
+				saveB = (BackEnd) objectInputStream.readObject();
+
+				objectInputStream.close();
+				fileInputStream.close();
+
+				if (lineMap != null && countries != null && continents != null && playerSet != null && name != null && color != null && armies != null && currentPhase != null && phase != null && labelsCountry != null){
+					removeAll();
+
+					lineMap = saveLineMap;
+					countries = saveCountries;
+					continents = saveContinents;
+					playerSet = savePlayerSet;
+					name = saveName;
+					color = saveColor;
+					armies = saveArmies;
+					currentPhase = saveCurrentPhase;
+					phase = savePhase;
+					labelsCountry = saveLabelsCountry;
+					b = saveB;
+
+					frame.setEnabled(true);
+//					for (JLabel country : labelsCountry) {
+//						frame.remove(country);
+//					}
+					observable.setCountries(countries);
+					observable.setContinents(continents);
+					observable.setPlayerSet(playerSet);
+					dominationView = new DominationView(observable);
+					observable.addObserver(dominationView);
+
+					paintCountry(countries);
+
+					repaint();
+
+					// create button country
+					//JButton phase1 = phase;
+					String phase1Name = phase.getName();
+					phase = new JButton(currentPhase + " phase");
+					//currentPhase = "start up";
+					phase.setName(phase1Name);
+					phase.setBackground(Color.green);
+					phase.setBounds(400, 600, 200, 50);
+					phase.addMouseListener(ih);
+					add(phase);
+
+					// player name color label
+					JLabel player = new JLabel("Player: ");
+					player.setBounds(1000, 20, 80, 25);
+					player.setName("player");
+					add(player);
+					String name1 = name.getText();
+					name = new JLabel();
+					name.setText(name1);
+					name.setName("player");
+					name.setBounds(1060, 20, 20, 25);
+					add(name);
+					color = new JLabel("");
+					color.setBounds(1110, 20, 25, 25);
+					color.setBackground(playerSet.get(name1).getColor());
+					color.setOpaque(true);
+					add(color);
+
+					// receive armies number
+					JLabel army = new JLabel();
+					army.setText("Army: ");
+					army.setBounds(1000, 60, 80, 25);
+					add(army);
+					String n = String.valueOf(playerSet.get(name1).getArmy());
+					armies = new JLabel(n);
+					armies.setName("armies");
+					armies.setBounds(1100, 70, 80, 25);
+					add(armies);
+
+					JOptionPane.showConfirmDialog(frame,"Load Successfully", "RiskGame",JOptionPane.DEFAULT_OPTION);
+				}
+			} catch (Exception e){
+				JOptionPane.showConfirmDialog(frame, e.toString() + "\nLoad Failed", "RiskGame", JOptionPane.DEFAULT_OPTION);
+			}
+		}
 
 		public PlayPane() {
 			observable.setCountries(countries);
@@ -255,6 +440,60 @@ public class PlayView extends JFrame implements Observer  {
 				g.drawLine(s.x + 50, s.y + 50, e.x + 50, e.y + 50);
 			}
 
+		}
+
+		public void paintCountry(HashMap<String, Country> countries){
+
+			File image = new File("resource/tower.png");
+			for (String key : countries.keySet()) {
+
+				Point start = countries.get(key).getLocation();
+				String continent = countries.get(key).getContinent() + " " + countries.get(key).getArmy();
+
+				String countryList = countries.get(key).getCountryList();
+				countries.get(key).setCountryList(countryList + " ");
+				String[] link = countryList.split(" ");
+				try {
+					BufferedImage img = ImageIO.read(image);
+
+					int width = img.getWidth();
+					int height = img.getHeight();
+
+					WritableRaster raster = img.getRaster();
+					for (int xx = 0; xx < width; xx++) {
+						for (int yy = 0; yy < height; yy++) {
+							int[] pixels = raster.getPixel(xx, yy, (int[]) null);
+							pixels[0] = countries.get(key).getColor().getRed();
+							pixels[1] = countries.get(key).getColor().getGreen();
+							pixels[2] = countries.get(key).getColor().getBlue();
+							raster.setPixel(xx, yy, pixels);
+						}
+
+					}
+
+					JLabel label = new JLabel(new ImageIcon(img));
+					label.setSize(label.getPreferredSize());
+					label.setLocation(start);
+					label.setText(continent);
+					label.setName(key);
+					label.setHorizontalTextPosition(JLabel.CENTER);
+					label.setVerticalTextPosition(JLabel.CENTER);
+					label.addMouseListener(ih);
+					label.addMouseMotionListener(ih);
+					add(label);
+					labelsCountry.add(label);
+
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+				for (int i = 0; i < link.length; i++) {
+					if (countries.containsKey(link[i])) {
+						Point end = countries.get(link[i]).getLocation();
+						lineMap.put(key + " " + link[i], new Line(start, end));
+					}
+				}
+			}
 		}
 
 

@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -40,7 +41,7 @@ import Model.Player;
  * @version 3.0
  * @since 2019-03-03
  */
-public class BackEnd implements Observer {
+public class BackEnd implements Observer, Serializable {
 
 	public HashMap<String, Country> countries = new HashMap<>();
 	public HashMap<String, Continent> continents = new HashMap<>();

@@ -1,6 +1,7 @@
 package Model;
 
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  * <h1>Line</h1> 
@@ -10,7 +11,7 @@ import java.awt.Point;
  * @version 3.0
  * @since 2019-03-01
  */
-public class Line {
+public class Line implements Serializable {
 
 	private Point start;
 	private Point end;

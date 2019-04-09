@@ -1,5 +1,6 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @version 3.0
  * @since 2019-03-01
  */
-public class FindPath { 
+public class FindPath implements Serializable {
 		private int v; 
 		private ArrayList<Integer>[] adjList; 	
 		public String allpath ="";

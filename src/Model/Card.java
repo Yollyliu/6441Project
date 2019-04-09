@@ -1,5 +1,7 @@
 package Model;
 
+import java.io.Serializable;
+
 /**
  * <h1>Card</h1> 
  * This class for defining a card object.
@@ -8,7 +10,7 @@ package Model;
  * @version 3.0
  * @since 2019-03-01
  */
-public class Card {
+public class Card implements Serializable {
 
 	String name;
 

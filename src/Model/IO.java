@@ -17,7 +17,7 @@ import java.util.Observable;
  * @version 3.0
  * @since 2019-02-28
  */
-public class IO extends Observable {
+public class IO extends Observable implements Serializable {
 	private HashMap<String, Country> countries;
 	private HashMap<String, Continent> continents;
 	private String image;

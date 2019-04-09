@@ -4,6 +4,7 @@ import PlayerStrategy.Strategy;
 import PlayerStrategy.strategyFactory;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -15,7 +16,7 @@ import java.util.*;
  * @version 3.0
  * @since 2019-03-01
  */
-public class Player {
+public class Player implements Serializable {
 
 	private String playerName;
 	private Color color;

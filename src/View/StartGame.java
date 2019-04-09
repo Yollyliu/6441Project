@@ -95,7 +95,7 @@ public class StartGame extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					frame.dispose();
-					new InitGame();
+					new TourInitGame();
 					System.out.println("Init Game");
 				}
 			});

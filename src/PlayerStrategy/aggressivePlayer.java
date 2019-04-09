@@ -4,13 +4,14 @@ import Model.Continent;
 import Model.Country;
 import Model.Player;
 
+import java.io.Serializable;
 import java.text.Collator;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Thread.sleep;
 
-public class aggressivePlayer  implements Strategy{
+public class aggressivePlayer  implements Strategy, Serializable {
 
     String behavior="";
     Player player;

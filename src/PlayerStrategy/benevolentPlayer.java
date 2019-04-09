@@ -4,12 +4,13 @@ import Model.Continent;
 import Model.Country;
 import Model.Player;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class benevolentPlayer implements Strategy{
+public class benevolentPlayer implements Strategy, Serializable {
 
     String behavior="";
     Player player;

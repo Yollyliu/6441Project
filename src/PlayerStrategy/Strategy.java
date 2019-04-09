@@ -4,6 +4,7 @@ import Model.Continent;
 import Model.Country;
 import Model.Player;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 

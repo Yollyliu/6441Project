@@ -1,5 +1,7 @@
 package Model;
 
+import java.io.Serializable;
+
 /**
  * <h1>Message</h1>
  * This class stores operation message, like operation succeed or not, error message.
@@ -8,7 +10,7 @@ package Model;
  * @version 3.0
  * @since 2019-03-15
  */
-public class Message {
+public class Message implements Serializable {
     private static boolean success;
     private static String message;
     

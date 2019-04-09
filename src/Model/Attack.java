@@ -1,6 +1,7 @@
 package Model;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -11,7 +12,7 @@ import java.util.*;
  * @version 3.0
  * @since 2019-03-08
  */
-public class Attack {
+public class Attack implements Serializable {
 
 	private HashMap<String, Country> countries;
 	private HashMap<String, Continent> continents;

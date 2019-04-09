@@ -2,6 +2,7 @@ package Model;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  *<h1>Country</h1>
@@ -11,7 +12,7 @@ import java.awt.Point;
  * @version 3.0
  * @since 2019-02-28
  */
-public class Country {
+public class Country implements Serializable {
 	private int name;
 	private Point location;
 	private int army;

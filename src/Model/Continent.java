@@ -1,5 +1,6 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  * @version 3.0
  * @since 2019-02-28
  */
-public class Continent {
+public class Continent implements Serializable {
 	private String name;
 	private int convalue = 0;
 	private ArrayList<String> countryList;

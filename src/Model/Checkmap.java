@@ -1,5 +1,6 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,7 +15,7 @@ import java.util.Map;
  * @version 3.0
  * @since 2019-02-28
  */
-public class Checkmap {
+public class Checkmap implements Serializable {
 
 	private HashMap<String, Country> countries;
 	private HashMap<String, Continent> continents;

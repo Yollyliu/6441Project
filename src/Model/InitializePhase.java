@@ -42,6 +42,14 @@ public class InitializePhase extends Observable {
 		return playerSet;
 	}
 
+	public ArrayList <String> getBehavoirs() {
+		return behavoirs;
+	}
+
+	public void setBehavoirs(ArrayList <String> behavoirs) {
+		this.behavoirs = behavoirs;
+	}
+
 	/**
 	 * This method modifies player set.
 	 *
@@ -108,6 +116,13 @@ public class InitializePhase extends Observable {
 		this.continents = continents;
 		this.playerNum = behavoirs.size();
 		this.behavoirs = behavoirs;
+	}
+
+	public void clearAll(){
+		this.countries = new HashMap <>();
+		this.continents = new HashMap <>();
+		this.playerNum = 0;
+		this.behavoirs = new ArrayList <>();
 	}
 
 	/**
@@ -455,6 +470,7 @@ public class InitializePhase extends Observable {
 	 * @param move The number of armies to be moved.
 	 */
 	public void Fortification(String from, String to, int move,String mode) {
+
 
 
 		if(mode.equalsIgnoreCase("human")) {
