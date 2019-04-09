@@ -12,7 +12,7 @@ import java.util.*;
  * This class for defining a player. It contains all
  * information.
  *
- * @author jiamin_he
+ * @author jiamin_he,youlin_liu,shuo_chi
  * @version 3.0
  * @since 2019-03-01
  */
@@ -524,7 +524,13 @@ public class Player implements Serializable {
 		return max + 1;
 	}
 
-	//from
+	/**
+	 * This method is used to update data after fortification
+	 *
+	 * @param one object of Country whose armies induced.
+	 * @param two object of Country whose armies increased.
+	 * @param countries a hash map stores all countries.
+	 */
 	public void updateFortification(Country one, Country two,
 									HashMap<String, Country> countries){
 
@@ -560,6 +566,11 @@ public class Player implements Serializable {
 
 	}
 
+	/**
+	 *This method is for aggressive player start up phase.
+	 *
+	 * @param countries a hash map stores all countries.
+	 */
 	public void agrressiveStartUp(HashMap<String, Country> countries){
 		System.out.println("we are in aggressive");
 		HashMap<Integer,Integer> frontNum=new HashMap <>();

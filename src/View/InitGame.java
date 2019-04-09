@@ -28,7 +28,7 @@ import Model.Message;
  * <h1>InitGame</h1> 
  * Input the player number and select map.
  *
- * @author chenwei_song
+ * @author chenwei_song,tianshu_ji
  * @version 3.0
  * @since 2019-03-01
  */

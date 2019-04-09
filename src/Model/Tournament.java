@@ -8,7 +8,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-
+/**
+ * <h1>Tournament</h1>
+ * This class is for tournament mode.
+ *
+ * @author youlin_liu,shuo_chi,tianshu_ji.
+ * @version 5.0
+ * @since 2019-04-01
+ */
 public class Tournament implements Serializable {
 
 
@@ -19,30 +26,64 @@ public class Tournament implements Serializable {
     InitializePhase mode=new InitializePhase();
     ArrayList<String> behavoirs = new ArrayList<>();
 
+    /**
+     * This method is constructor of class tournament.
+     */
     public Tournament() {
     }
 
+    /**
+     * This method is used to get initializePhase object.
+     * @return initializePhase object.
+     */
     public InitializePhase getMode() {
         return mode;
     }
 
+    /**
+     * This method is setter for resultInformation.
+     * @param resultInformation results.
+     */
     public void setResultInformation(LinkedList <String> resultInformation) {
 
         this.resultInformation = resultInformation;
     }
 
+    /**
+     * This method is a setter for InitializePhase.
+     *
+     * @param mode object of InitializePhase.
+     */
     public void setMode(InitializePhase mode) {
         this.mode = mode;
     }
 
+    /**
+     * This method is a setter for behaviors.
+     *
+     * @param behavoirs behaviors of players.
+     */
     public void setBehavoirs(ArrayList <String> behavoirs) {
         this.behavoirs = behavoirs;
     }
 
+    /**
+     * This method is a getter for behaviors.
+     *
+     * @return behaviors of players.
+     */
     public ArrayList <String> getBehavoirs() {
         return behavoirs;
     }
 
+    /**
+     * This method is a constructor.
+     *
+     * @param behavoirs behaviors of players.
+     * @param maps maps.
+     * @param gameTime time of game.
+     * @param gameTurn turn of each game.
+     */
     public Tournament(ArrayList<String> behavoirs,
                       LinkedList <String> maps, int gameTime, int gameTurn) {
 
@@ -61,7 +102,9 @@ public class Tournament implements Serializable {
     }
 
 
-
+    /**
+     * This method is used to run this class.
+     */
     public void runTourn() {
 
         //loop for map
@@ -174,33 +217,66 @@ public class Tournament implements Serializable {
     }
 
 
-
-
-
+    /**
+     * This method is a getter for resultInformation.
+     *
+     * @return resultInformation.
+     */
     public LinkedList <String> getResultInformation() {
         return resultInformation;
     }
 
+    /**
+     *This method is a getter for maps.
+     *
+     * @return maps.
+     */
     public LinkedList <String> getMaps() {
         return maps;
     }
 
+    /**
+     * This method is a setter for maps.
+     *
+     * @param maps maps.
+     */
     public void setMaps(LinkedList <String> maps) {
         this.maps = maps;
     }
 
+    /**
+     * This method is a getter for gameTime.
+     *
+     * @return gameTime.
+     */
     public int getGameTime() {
         return gameTime;
     }
 
+    /**
+     * This method is a setter for gameTime.
+     *
+     * @param gameTime times of game.
+     */
     public void setGameTime(int gameTime) {
         this.gameTime = gameTime;
     }
 
+    /**
+     * This method is a getter for gameTurn.
+     *
+     * @return gameTurn.
+     */
     public int getGameTurn() {
         return gameTurn;
     }
 
+
+    /**
+     * This method is setter for gameTurn.
+     *
+     * @param gameTurn turns of game.
+     */
     public void setGameTurn(int gameTurn) {
         this.gameTurn = gameTurn;
     }

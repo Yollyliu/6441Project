@@ -457,7 +457,11 @@ public class InitializePhase extends Observable implements Serializable {
 
 	}
 
-
+	/**
+	 * This method implements substract fortification armies after fortificaiton.
+	 *
+	 * @param player Player's name.
+	 */
 	public void substractCheaterFortification(String player){
 
 		HashMap<Integer,Integer> front =playerSet.get(player).Front(countries);
@@ -475,24 +479,6 @@ public class InitializePhase extends Observable implements Serializable {
 	}
 
 
-//	public void substractNoCheaterFortification(String player){
-//
-//		HashMap<Integer,Integer> front =playerSet.get(player).Front(countries);
-//		for (Country c:playerSet.get(player).getCountryList()) {
-//			if(!front.containsKey(c.getName())){
-//				int armyNow = c.getArmy();
-//				if(armyNow==1){
-//					armyNow=2;
-//				}
-//				c.setArmy(armyNow-1);
-//				countries.get(String.valueOf(c.getName())).setArmy( armyNow-1);
-//
-//			}
-//		}
-//		setChanged();
-//		notifyObservers();
-//	}
-//
 
 
 	/**
@@ -511,6 +497,12 @@ public class InitializePhase extends Observable implements Serializable {
 
 	}
 
+	/**
+	 * This method check if can fortificaiton or not.
+	 *
+	 * @param player Player's name.
+	 * @return return canFortification or not.
+	 */
 	public boolean canFortification(String player){
 		boolean flag=false;
 		LinkedList<Country> playerCountry=playerSet.get(player).getCountryList();

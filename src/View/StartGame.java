@@ -14,7 +14,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  *<h1>StartGame</h1>
  * Creating play game or edit game.
  * 
- * @author chenwei_song
+ * @author chenwei_song,tianshu_ji
  * @version 3.0
  * @since 2019-02-27
  */
@@ -64,7 +64,9 @@ public class StartGame extends JFrame{
 	 * It is a panel to add buttons.
 	 */
 	public class StartPane extends JLayeredPane{
-		
+		/**
+		 * It is a constructor function.
+		 */
 		public StartPane(){
 
 			JButton single = new JButton("Singe Game");

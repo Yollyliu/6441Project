@@ -20,7 +20,7 @@ public class DominationView extends JLayeredPane implements Observer {
 	public HashMap<String, Player> playerSet = new HashMap<>();
 	public HashMap<String, Country> countries = new HashMap<>();
 	public HashMap<String, Continent> continents = new HashMap<>();
-	LinkedList<String> labels = new LinkedList<>();
+
 	InitializePhase observable;
 	LinkedList<JLabel> allLables = new LinkedList<>();
 
@@ -95,11 +95,12 @@ public class DominationView extends JLayeredPane implements Observer {
 
 			}
 			if (noPlayer) {
-				StringBuffer sb = new StringBuffer();
-				sb.append("Player");
-				sb.append(la.getName());
-				sb.append("       0");
-				la.setText(sb.toString());
+				la.setVisible(false);
+//				StringBuffer sb = new StringBuffer();
+//				sb.append("Player");
+//				sb.append(la.getName());
+//				sb.append("       0");
+//				la.setText(sb.toString());
 
 			}
 			noPlayer = true;
@@ -200,5 +201,6 @@ public class DominationView extends JLayeredPane implements Observer {
 		armies = String.valueOf(total);
 		return armies;
 	}
+
 
 }

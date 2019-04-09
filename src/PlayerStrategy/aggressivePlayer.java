@@ -292,12 +292,6 @@ public class aggressivePlayer  implements Strategy, Serializable {
             }
         }
 
-//
-//        for (Country c:player.getCountryList()) {
-//            int armyNow = c.getArmy();
-//            c.setArmy(armyNow+1);
-//            countries.get(String.valueOf(c.getName())).setArmy(armyNow+1);
-//        }
 
         return s;
     }

@@ -226,7 +226,6 @@ public class PlayView extends JFrame implements Observer  {
 		 *
 		 * @param file The file to read
 		 */
-
 		public void loadGame(File file){
 			try{
 				HashMap<String, Line> saveLineMap = new HashMap<>();
@@ -270,6 +269,17 @@ public class PlayView extends JFrame implements Observer  {
 				if (lineMap != null && countries != null && continents != null && playerSet != null && name != null && color != null && armies != null && currentPhase != null && phase != null && labelsCountry != null && b != null && dominationView != null && mode != null){
 					removeAll();
 
+					int m = dominationView.getComponentCount();
+					if (m > 0) {
+						Component[] components = dominationView.getComponents();
+						for (int i = 0; i < components.length; i++) {
+							if (components[i] instanceof JLabel) {
+								JLabel label = (JLabel) components[i];
+								label.setText("");
+							}
+						}
+					}
+
 					lineMap = saveLineMap;
 					countries = saveCountries;
 					continents = saveContinents;
@@ -281,7 +291,53 @@ public class PlayView extends JFrame implements Observer  {
 					phase = savePhase;
 					labelsCountry = saveLabelsCountry;
 					b = saveB;
+					int num=dominationView.allLables.size();
+					if(num+1<=savePlayerSet.size()){
+						JLabel label=new JLabel();
+						label.setName(Integer.toString(num+1));
+						label.setText("");
+						label.setBounds(80, 340 + 30 * num, 400, 25);
+						dominationView.add(label);
+						dominationView.allLables.add(label);
+						num++;
+
+					}
+
+					int laterNum=dominationView.allLables.size();
+					if(laterNum>savePlayerSet.size()) {
+						boolean flag = false;
+						for (JLabel la : dominationView.allLables) {
+							for (Map.Entry <String, Player> entry : savePlayerSet.entrySet()) {
+								if (la.getName().equals(entry.getKey())) {
+									flag = true;
+								}
+							}
+							if (!flag) {
+								System.out.println("we are going to remove "+la.getName());
+
+								la.setVisible(false);
+							}
+						}
+					}
+
+
+
+					System.out.println("before equal, dominationView size is : "+dominationView.allLables.size());
+
 					dominationView = saveDominationView;
+					System.out.println("after equal, dominationView size is : "+dominationView.allLables.size());
+
+					for(int f=0;f<saveDominationView.allLables.size();f++){
+						System.out.println(dominationView.allLables.get(f).getText());
+					}
+
+					int fsave=saveDominationView.allLables.size();
+					while(fsave<dominationView.allLables.size()){
+						dominationView.allLables.get(fsave+1).setText("");
+						fsave++;
+					}
+
+
 					mode = saveMode;
 					WIN = saveWIN;
 
@@ -289,10 +345,13 @@ public class PlayView extends JFrame implements Observer  {
 //					for (JLabel country : labelsCountry) {
 //						frame.remove(country);
 //					}
+					frame.add(dominationView, BorderLayout.EAST);
 					observable.setCountries(countries);
 					observable.setContinents(continents);
 					observable.setPlayerSet(playerSet);
-					//dominationView = new DominationView(observable);
+					observable.addObserver(dominationView);
+					//frame.add(dominationView, BorderLayout.EAST);
+					dominationView = new DominationView(observable);
 					observable.addObserver(dominationView);
 
 					File image = new File("resource/tower.png");
@@ -400,8 +459,6 @@ public class PlayView extends JFrame implements Observer  {
 				JOptionPane.showConfirmDialog(frame, e.toString() + "\nLoad Failed", "RiskGame", JOptionPane.DEFAULT_OPTION);
 			}
 		}
-
-
 
 
 		/**
@@ -833,10 +890,9 @@ public class PlayView extends JFrame implements Observer  {
 				//String s=currentPhase+" "+nextp;
 				String countrys = "Add One Army to " + cd;
 				showInformation(countrys, s);
-
+				deleteBorder();
 				stateChangeStartUp("start up");
 				System.out.println(" ******** End of start up in noHuman **********");
-				deleteBorder();
 				return;
 
 			}
@@ -951,6 +1007,7 @@ public class PlayView extends JFrame implements Observer  {
 		/**
 		 * This is the method to buffer image.
 		 * @param img buffer image.
+		 * @return return bufferedImage.
 		 */
 
 		public BufferedImage toBufferedImage(Image img)
@@ -995,6 +1052,11 @@ public class PlayView extends JFrame implements Observer  {
 		}
 
 
+		/**
+		 * This is the method to update JLabel of a player.
+		 * @param label is a country signal for a player.
+		 * @param player is a player name own this label country.
+		 */
 		public void updateCountriesColorFix(JLabel label,String player){
 			ImageIcon imageIcon = (ImageIcon) label.getIcon();
 			Image image = imageIcon.getImage();
@@ -1004,7 +1066,6 @@ public class PlayView extends JFrame implements Observer  {
 			int height = img.getHeight();
 
 			WritableRaster raster = img.getRaster();
-//
 
 
 			for (int xx = 0; xx < width; xx++) {
@@ -1051,11 +1112,6 @@ public class PlayView extends JFrame implements Observer  {
 						observable.substractCheaterFortification(name.getText());
 						updateLabelsCountry();
 				}
-// else if(mode.getText().equalsIgnoreCase("aggressive") ||
-//							mode.getText().equalsIgnoreCase("random")){
-//						observable.substractNoCheaterFortification(name.getText());
-//						updateLabelsCountry();
-//					}
 
 					showInformation("Player"+name.getText()+" Fortificaiton ","Fortificaiton "+name.getText());
 
@@ -1269,10 +1325,6 @@ public class PlayView extends JFrame implements Observer  {
 			System.out.println("************** end of fortificationNoHuman ************");
 
 		}
-
-
-
-
 
 		/**
 		 * This method updates JLabel information of countries.
@@ -1724,9 +1776,6 @@ public class PlayView extends JFrame implements Observer  {
 					JOptionPane.showMessageDialog(null, "please select your own countries");
 				}
 			}
-//
-//
-
 
 			/**
 			 * This method check whether current player click right country or not.
@@ -1911,82 +1960,6 @@ public class PlayView extends JFrame implements Observer  {
 					String nextP = b.findnext(name.getText());
 					enterReinforcement(nextP,"Fortification");
 
-					// update next player armies
-//					System.out.println(playerSet.get(nextP).getArmy());
-//					name.setText(nextP);
-//					mode.setText(playerSet.get(nextP).getMode());
-//
-//					color.setBackground(playerSet.get(nextP).getColor());
-//					if (!playerSet.get(nextP).getMode().equalsIgnoreCase("cheater")
-//							&& ! playerSet.get(nextP).getMode().equalsIgnoreCase("human")) {
-//						String ans=observable.Reinforcement(nextP);
-//						String army = ans.split(" ")[0];
-//						String strongest = ans.split(" ")[1];
-//						String infomation = "Add " + army + " armies to " + strongest + " country";
-//						String s=currentPhase+" "+nextP;
-//						showInformation(infomation,s);
-//						LinkedList <String> delete = observable.autoChangeCard("1");
-//						if (delete.size() > 0) {
-//							for (int i = 0; i < delete.size(); i++) {
-//
-//								String sc="Change Card "+nextP;
-//								showInformation(delete.get(i),sc);
-//							}
-//						}
-//						//String cc = observable.randomSelect(nextP);
-//						String curInf="Add " + playerSet.get(nextP).getArmy() + " armies to " + strongest + " country";
-//						showInformation(curInf,strongest);
-//						while (playerSet.get(nextP).getArmy() > 0) {
-//							observable.Startup(nextP, strongest);
-//						}
-//						//armies.setText(String.valueOf(playerSet.get(nextP).getArmy()));
-//						System.out.println();
-//						updateLabelsCountry();
-//						armies.setText("0");
-//						noHuman();
-//
-//
-//
-//						observable.autoChangeCard(nextP);
-//						updateLabelsCountry();
-//						noHuman();
-//					}else if(playerSet.get(nextP).getMode().equalsIgnoreCase("cheater")){
-//						observable.Reinforcement(nextP);
-//						showInformation("Cheater: auto double armies to every country!",
-//								"Reinforcement "+nextP);
-//						System.out.println();
-//						updateLabelsCountry();
-//						armies.setText("0");
-//						noHuman();
-//
-//
-//					}
-//
-//
-//
-//					else {
-////
-//						JOptionPane.showMessageDialog(null, "enter reinforcement phase in human");
-//						observable.Reinforcement(nextP);
-//						if (playerSet.get(nextP).getCountryList().size() > 0) {
-//							observable.cardArmy(nextP, playerSet.get(nextP).getCardList(), false);
-//							armies.setText("<html><body><p align=\"center\">calculating...<br/>press&nbsp;reinforcement</p></body></html>");
-//
-//						} else {
-//							armies.setText(String.valueOf(playerSet.get(nextP).getArmy()));
-//						}
-//
-////						if (playerSet.get(nextP).getCardList().size() != 0) {
-////							System.out.println(" Card Army is not zero ");
-////							observable.cardArmy(nextP, playerSet.get(nextP).getCardList(), false);
-////							armies.setText(" ? ");
-////
-////						} else {
-////							System.out.println(" Card Army is zero");
-////							armies.setText(String.valueOf(playerSet.get(nextP).getArmy()));
-////						}
-//
-//					}
 //
 				}
 

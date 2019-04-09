@@ -58,12 +58,25 @@ public class humanPlayer implements Strategy, Serializable {
         this.player = player;
     }
 
+    /**
+     * This method is a constructor.
+     *
+     * @param player object of Player.
+     */
     public humanPlayer(Player player){
         System.out.println(" hello, we are in human player");
         this.player=player;
         this.behavior="Human";
     }
 
+    /**
+     * This method is the reinforcement phase in player.
+     *
+     * @param playerSet object of Players.
+     * @param countries  A hash map storing all countries which are in the map.
+     * @param continents A hash map storing all continents which are in the map.
+     * @return String of reinforcement result.
+     */
     @Override
     public String Reinforcement(HashMap<String, Player> playerSet,
                               HashMap<String, Country> countries,

@@ -3,11 +3,9 @@ package View;
 import Model.Tournament;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Vector;
 
 /**
  * <h1>TourResult</h1>
@@ -32,6 +30,10 @@ public class TourResult extends JFrame{
     int G;
     int D;
 
+    /**
+     * This is a contructor function.
+     * @param tournament is the initialize of tournament.
+     */
     public TourResult(Tournament tournament) {
 //        EventQueue.invokeLater(new Runnable() {
 //
@@ -160,7 +162,6 @@ public class TourResult extends JFrame{
         for(int i=0;i<resultStrings.size();i++){
             System.out.println(resultStrings.get(i));;
         }
-
 
 
         System.out.println("resultStrings "+resultStrings.size());
