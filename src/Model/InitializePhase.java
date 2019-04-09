@@ -144,7 +144,7 @@ public class InitializePhase extends Observable {
 		boolean initAmry = initializeArmy();
 		boolean initCount = initializeCountries();
 		
-		for (Map.Entry<String, Continent> cEntry : this.continents.entrySet()) {
+		for (Entry<String, Continent> cEntry : this.continents.entrySet()) {
 			System.out.println("Control Value of Continent " + cEntry.getKey()+ " : " + cEntry.getValue().getConvalue());
 		}
 
@@ -206,7 +206,7 @@ public class InitializePhase extends Observable {
 			System.out.println("InitializeArmy Failure");
 			return false;
 		} else {
-			for (Map.Entry<String, Player> entry : playerSet.entrySet()) {
+			for (Entry<String, Player> entry : playerSet.entrySet()) {
 				entry.getValue().setArmy(armyDefault);
 			}
 			System.out.println("InitializeArmy success");
@@ -228,7 +228,7 @@ public class InitializePhase extends Observable {
 
 		} else {
 			LinkedList <String> countryList = new LinkedList <>();
-			for (Map.Entry <String, Country> entry : countries.entrySet()) {
+			for (Entry <String, Country> entry : countries.entrySet()) {
 				countryList.addLast(entry.getKey());
 			}
 
@@ -236,7 +236,7 @@ public class InitializePhase extends Observable {
 				Random randomC = new Random();
 				if (countryList.size() < playerNum) {
 					LinkedList <String> playerList = new LinkedList <>();
-					for (Map.Entry <String, Player> entry : playerSet.entrySet()) {
+					for (Entry <String, Player> entry : playerSet.entrySet()) {
 						playerList.addLast(entry.getKey());
 					}
 					for (String str : countryList) {
@@ -254,7 +254,7 @@ public class InitializePhase extends Observable {
 					countryList.clear();
 
 				} else {
-					for (Map.Entry <String, Player> entry : playerSet.entrySet()) {
+					for (Entry <String, Player> entry : playerSet.entrySet()) {
 
 						int index = randomC.nextInt(countryList.size());
 						String remove = countryList.get(index);
@@ -303,6 +303,7 @@ public class InitializePhase extends Observable {
 
 			int carmies = countries.get(couname).getArmy() + 1;
 			countries.get(couname).setArmy(carmies);
+		System.out.println("finish start up, play army -1, country army +1");
 
 
 		setChanged();
@@ -323,6 +324,7 @@ public class InitializePhase extends Observable {
 		System.out.println("done well in Reinforcement");
 		System.out.println();
 		System.out.println();
+
 
 		setChanged();
 		notifyObservers(this);
@@ -407,7 +409,7 @@ public class InitializePhase extends Observable {
 
 			ans = playerSet.get(playerAttack).attack(attacker, defender, mode, attDices,
 					defDices, playerSet, countries, continents);
-		}else{
+		}else {
 			ans=playerSet.get(attacker).attack(attacker, defender, mode, attDices,
 					defDices, playerSet, countries, continents);
 		}
@@ -427,22 +429,7 @@ public class InitializePhase extends Observable {
 
 	}
 //
-//		Attack attack = new Attack(this.countries, this.continents, this.playerSet, attacker, defender, mode, attDices,
-//				defDices);
-//
-//		String result = attack.attacking();// invoking attacking function
-//
-//		if (result != "") {
-//			setChanged();
-//			notifyObservers(this);
-//			return result;
-//
-//		} else {
-//			System.out.println("Attack Failure!!!");
-//		}
-//
-//		return "Failure";
-//	}
+
 
 	/**
 	 * This method implements armies transfer in attack phase.
@@ -468,40 +455,56 @@ public class InitializePhase extends Observable {
 	 * @param move The number of armies to be moved.
 	 */
 	public void Fortification(String from, String to, int move,String mode) {
-		String player="";
-		for (String players : playerSet.keySet()) {
-			if (playerSet.get(players).getColor().equals(countries.get(from).getColor())) {
-				player = players;
-				break;
-			}
-		}
+
 
 		if(mode.equalsIgnoreCase("human")) {
 			System.out.println("InitializePhase human Fortificaiton");
+			String player="";
+			for (String players : playerSet.keySet()) {
+				if (playerSet.get(players).getColor().equals(countries.get(from).getColor())) {
+					player = players;
+					break;
+				}
+			}
 			Country fromc = countries.get(from);
 			Country toc = countries.get(to);
 
 			playerSet.get(player).fortification(fromc, toc, move, countries);
-		}else{
+		}else if(mode.equalsIgnoreCase("aggressive")){
+			if(playerSet.get(from).getCountryList().size()<2){
+				System.out.println("The "+ from+ " countries are small than 2." +
+						" No need to fortificaiton");
+			}else {
 
-			System.out.println("InitializePhase no human Fortificaiton");
-			String s= playerSet.get(from).fortification(countries.get(0), countries.get(1), move, countries);
-			System.out.println("////////////// get fortification of result in InitializePhase ////////////");
-			System.out.println("get result of fortification no human, result is : "+s);
-			String[] all=s.split(" ");
-            System.out.println(" The result length is "+ all.length);
-            if(all.length==2) {
-				Country one = countries.get(all[0]);       //最符合要兵条件的国家
-				Country two = countries.get(all[1]);        //兵多的国家
-				if(two.getArmy()>1) {
-					updateFortification(one, two,player);
-				}else{
-					System.out.println("The second country army no more than 1");
+				System.out.println("InitializePhase no human Fortificaiton");
+				String s = playerSet.get(from).fortification(countries.get(0), countries.get(1), move, countries);
+				System.out.println("////////////// get fortification of result in InitializePhase ////////////");
+				System.out.println("get result of fortification no human, result is : " + s);
+				String[] all = s.split(" ");
+				System.out.println(" The result length is " + all.length);
+				if (all.length == 2) {
+					Country one = countries.get(all[0]);       //最符合要兵条件的国家
+					Country two = countries.get(all[1]);        //兵多的国家
+					if (two.getArmy() > 1) {
+						updateFortification(one, two, from);
+					} else {
+						System.out.println("The second country army no more than 1");
+					}
+				} else {
+					System.out.println(" Cannot find satisfied two country in InitializePhase no human Fortification");
 				}
-			}else{
-				System.out.println(" Cannot find satisfied two country in InitializePhase no human Fortification");
 			}
 
+		}else if(mode.equalsIgnoreCase("benevolent")){
+			if(playerSet.get(from).getCountryList().size()<2){
+				System.out.println("The "+ from+ " countries are small than 2." +
+						" No need to fortificaiton");
+			}else {
+				System.out.println("InitializePhase Benevolent Fortificaiton");
+				String s = playerSet.get(from).fortification(countries.get(0), countries.get(1), move, countries);
+				System.out.println("////////////// get fortification of result in InitializePhase ////////////");
+				System.out.println("get result of fortification no human, result is : " + s);
+			}
 		}
 
 		setChanged();
@@ -607,11 +610,11 @@ public class InitializePhase extends Observable {
 		int maxCountry = returnMax();
 		FindPath fp = new FindPath(maxCountry);
 		String p = player;
-		Iterator<Map.Entry<String, Country>> iterator = countries.entrySet().iterator();
+		Iterator<Entry<String, Country>> iterator = countries.entrySet().iterator();
 
 		// build graph
 		while (iterator.hasNext()) {
-			Map.Entry<String, Country> entry = iterator.next();
+			Entry<String, Country> entry = iterator.next();
 			int from = Integer.valueOf(entry.getKey());
 			String[] clist = entry.getValue().getCountryList().split(" ");
 			for (int i = 0; i < clist.length; i++) {
@@ -693,6 +696,80 @@ public class InitializePhase extends Observable {
 		}
 		return match;
 	}
+
+
+	public LinkedList<String> autoChangeCard(String player){
+
+		LinkedList<String> ans=new LinkedList <>();
+		if(playerSet.get(player).getCardList().size()<3){
+			System.out.println("Card smaller than 3 ");
+			return ans;
+		}
+		System.out.println("Card list larger than 3");
+		int time=playerSet.get(player).getChangeCardTime();
+		HashMap<String,Integer> store=new HashMap <>();
+		for(int i=0;i<playerSet.get(player).getCardList().size();i++){
+			store.put(playerSet.get(player).getCardList().get(i).getName(),
+					store.getOrDefault(playerSet.get(player).getCardList().get(i).getName(), 0) + 1);
+		}
+
+		int curArmy=0;
+		String curdelete="";
+		while(playerSet.get(player).getCardList().size()>4) {
+			curdelete="";
+			if(store.size()>2) {
+				deleteCard(playerSet.get(player),"i","c","a");
+				curdelete="i c a";
+				System.out.println("current delete is "+curdelete);
+			}else{
+				for(String key : store.keySet()){
+					if(store.get(key)>=3){
+						deleteCard(playerSet.get(player),key,key,key);
+						curdelete=key+" "+key+" "+key;
+						System.out.println("current delete is "+curdelete);
+					}
+				}
+			}
+			curArmy += time *5;
+			time++;
+			ans.add(curdelete);
+		}
+		int total=curArmy+playerSet.get(player).getArmy();
+		playerSet.get(player).setArmy(total);
+		playerSet.get(player).setChangeCardTime(time);
+
+		setChanged();
+		notifyObservers(this);
+		return ans;
+
+
+	}
+
+	public void deleteCard(Player player,String one,
+						   String two, String three ){
+		for (int i = 0; i < player.getCardList().size(); i++) {
+			if (player.getCardList().get(i).getName().equals(one)) {
+				player.getCardList().remove(i);
+				break;
+			}
+		}
+		for(int i=0;i<player.getCardList().size();i++) {
+			if (player.getCardList().get(i).getName().equals(two)) {
+				player.getCardList().remove(i);
+				break;
+			}
+		}
+		for(int i=0;i<player.getCardList().size();i++){
+			if (player.getCardList().get(i).getName().equals(three)) {
+				player.getCardList().remove(i);
+				break;
+			}
+
+		}
+
+	}
+
+
 
 	/**
      * This method is to find the maximum of countries.

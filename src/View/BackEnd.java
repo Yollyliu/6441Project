@@ -392,13 +392,20 @@ public class BackEnd implements Observer {
 
 		boolean canAttack = false;
 		LinkedList<Country> countrylist = playerSet.get(player).getCountryList();
+		System.out.println("********* Begin canAttack BendEnd *********");
 		for (int i = 0; i < countrylist.size(); i++) {
 			String attcoun = String.valueOf(countrylist.get(i).getName());
 			String[] surround = countries.get(attcoun).getCountryList().split(" ");
+			System.out.println("Country : "+ attcoun+ " Army: "+countries.get(attcoun).getArmy());
 			for (int j = 0; j < surround.length; j++) {
 				Color attColor = playerSet.get(player).getColor();
 				Color defColor = countries.get(surround[j]).getColor();
-				if (attColor != defColor && countrylist.get(i).getArmy() > 1) {
+				//System.out.println("Find a different player country :");
+				System.out.println("Country : "+ attcoun+ " has neib: "+surround.length);
+				//if (attColor != defColor && countrylist.get(i).getArmy() > 1) {
+				if (attColor != defColor && countries.get(attcoun).getArmy() > 1) {
+
+					System.out.println("Definder is "+surround[j]);
 					canAttack = true;
 				}
 			}
@@ -412,37 +419,4 @@ public class BackEnd implements Observer {
 		return canAttack;
 	}
 
-	public String nextPlayerNoStartUp(String currentplayer){
-
-		String next = "";
-		int size = playerSet.size();
-		int[] a = new int[size];
-		int cup = Integer.valueOf(currentplayer);
-		int temp;
-		if (cup == size) {
-			temp = 1;
-		} else {
-			temp = cup + 1;
-		}
-
-		for (int i = 0; i < a.length; i++) {
-			if (temp == a.length + 1) {
-				temp = 1;
-			}
-			a[i] = temp;
-			temp++;
-
-		}
-		for (int i = 0; i < a.length; i++) {
-
-			if (playerSet.get(String.valueOf(a[i])).getCountryList().size() > 0) {
-				next = String.valueOf(a[i]);
-				break;
-			}
-
-		}
-
-		return next;
-
-	}
 }

@@ -222,7 +222,7 @@ public class Player {
 			if(countryList.get(i).getName()==country){
 				countryList.get(i).setArmy(army);
 				System.out.println("countrylist army is "+countryList.get(i).getArmy());
-				break;
+				//break;
 			}
 
 		}
@@ -468,7 +468,6 @@ public class Player {
 		int previous=countries.get(flag).getArmy();
 		countries.get(flag).setArmy(this.getArmy()+previous);
 		this.setArmy(0);
-
 	}
 
 	public HashMap<Integer,Integer> Front(

@@ -41,7 +41,11 @@ public class humanPlayer implements Strategy{
                                 HashMap<String, Continent> continents) {
         System.out.println(" hello, we are in human player reinforcement");
         player.getAllArmies(continents);
-        return "";
+        StringBuffer sb=new StringBuffer();
+        sb.append(player.getArmy());
+        sb.append(" ");
+        sb.append("clicked");
+        return sb.toString();
     }
 
     @Override

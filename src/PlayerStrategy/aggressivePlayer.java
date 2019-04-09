@@ -22,19 +22,17 @@ public class aggressivePlayer  implements Strategy{
     @Override
     public String Reinforcement(HashMap<String, Player> playerSet,
                               HashMap<String, Country> countries,
-                                HashMap<String, Continent> continents)
-             {
-                 System.out.println();
+                                HashMap<String, Continent> continents) {
+        System.out.println();
         System.out.println(" hello, we are in aggressive player reinforcement");
         player.getAllArmies(continents);
+
+        StringBuffer sb=new StringBuffer();
+        sb.append(player.getArmy());
+        sb.append(" ");
+        //3
         System.out.println("new army is "+ player.getArmy());
 
-//        Collections.sort(player.getCountryList(), new Comparator <Country>() {
-//            @Override
-//            public int compare(Country o1, Country o2) {
-//                return Collator.getInstance().compare(o1.getArmy(), o2.getArmy());
-//            }
-//        } );
         Country strongest=
                 player.getCountryList().stream().max(
                         Comparator.comparing(Country::getArmy)).get();
@@ -42,7 +40,7 @@ public class aggressivePlayer  implements Strategy{
         //Country strongest=player.getCountryList().getFirst();
         System.out.println("Strongest country: "+strongest.getName()+
                 " Army: "+strongest.getArmy());
-        int totalArmy=player.getArmy()+strongest.getArmy();
+        int totalArmy=player.getArmy()+strongest.getArmy(); //3 to:6
 
         System.out.println("total army is "+totalArmy);
         strongest.setArmy(totalArmy);
@@ -53,8 +51,9 @@ public class aggressivePlayer  implements Strategy{
         System.out.println("the strongest/lucky country is "+ String.valueOf(strongest.getName()));
         System.out.println();
         System.out.println();
+        sb.append(strongest.getName());
 
-        return String.valueOf(strongest.getName());
+        return sb.toString();
 
     }
 
@@ -80,7 +79,7 @@ public class aggressivePlayer  implements Strategy{
         //找到最强的国家，更行所有的，
         while(flag) {
             //拿到最强国家的排序
-            List <Country> allCountry = getStrongestCountry(countries);
+            List <Country> allCountry = getStrongestCountry(playerSet,attacker);
             if (allCountry.get(0).getArmy() < 2) {
                 System.out.println("cannot attack as no country army >=2");
                 return ans;
@@ -122,7 +121,7 @@ public class aggressivePlayer  implements Strategy{
                         System.out.println();
                         System.out.println("the attack information is "+ cur);
                         String[] readrecord = cur.split(" ");
-                        if(readrecord[0].equals(player.getPlayerName())) {
+                        if(readrecord[0].equals(attacker)) {
                             System.out.println("attacker Player " + aggressiveAttack + " win");
                             if(Integer.valueOf(readrecord[1])!= 0 ) {
                                 player.transfer(cur, strongest, allDefenders.get(i), countries);
@@ -165,22 +164,17 @@ public class aggressivePlayer  implements Strategy{
 
 
     public List<Country> getStrongestCountry(
-            HashMap<String, Country> countries){
+            HashMap<String, Player> playerSet,String attacker){
 
-        LinkedList<Country> allCountry=new LinkedList <>();
-        for(String key: countries.keySet()){
-            allCountry.add(countries.get(key));
-        }
+        LinkedList<Country> allCountry=playerSet.get(attacker).getCountryList();
 
-        List<Country> newCountryList = allCountry.stream()
+
+       return ( allCountry.stream()
                 .sorted((c1, c2) -> {
                     if (c2.getArmy() - c1.getArmy() > 0 ) return 1;
                     else if (c2.getArmy() - c1.getArmy() == 0) return 0;
                     else return -1; })
-                .collect(Collectors.toList());
-
-        return newCountryList;
-
+                .collect(Collectors.toList()));
     }
 
     public LinkedList<Country> isStrongestWithNeib(Country strongest,
@@ -267,6 +261,7 @@ public class aggressivePlayer  implements Strategy{
                         " Army is "+one.getArmy());
             }
         }
+
         return s;
     }
 
