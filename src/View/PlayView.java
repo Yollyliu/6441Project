@@ -655,6 +655,7 @@ public class PlayView extends JFrame implements Observer  {
 						armies.setText(String.valueOf(playerSet.get(nextP).getArmy()));
 						phase.setText(state);
 						currentPhase = state;
+						updateLabelsCountry();
 						if(!playerSet.get(nextP).getMode().equalsIgnoreCase("human")){
 							noHuman();
 						}else {
@@ -662,6 +663,7 @@ public class PlayView extends JFrame implements Observer  {
 							return;
 						}
 					}
+
 				}
 
 
@@ -757,7 +759,6 @@ public class PlayView extends JFrame implements Observer  {
 				}
 
 				updateLabelsCountry();
-				//deleteBorder();
 				System.out.println();
 				System.out.println();
 				updateLabelsCountry();
@@ -771,9 +772,10 @@ public class PlayView extends JFrame implements Observer  {
 				String countrys = "Add One Army to " + cd;
 				showInformation(countrys, s);
 
+				deleteBorder();
 				stateChangeStartUp("start up");
 				System.out.println(" ******** End of start up in noHuman **********");
-				deleteBorder();
+
 				return;
 
 			}
@@ -810,6 +812,7 @@ public class PlayView extends JFrame implements Observer  {
 				ans = observable.attackPhase(name.getText(), "0",
 						"All_out", 0, 0, mode.getText());
 				//observable.Fortification("0","0",0);
+				updateLabelsCountry();
 				if(!mode.getText().equalsIgnoreCase("benevolent")) {
 					showInformation("Player" + name.getText() + " is attacking ", "Attack " + name.getText());
 				}
@@ -841,6 +844,7 @@ public class PlayView extends JFrame implements Observer  {
 					}
 				}
 				if(mode.getText().equalsIgnoreCase("cheater")){
+					updateLabelsCountry();
 					showInformation("Cheater: auto conquer neighbor countries!", "Attack "+name.getText());
 				}
 

@@ -55,72 +55,94 @@ public class cheaterPlayer implements Strategy,Serializable {
                                      HashMap<String, Continent> continents) {
         System.out.println("**********hello, we are in cheater player attack *********");
         LinkedList<String> ans=new LinkedList <>();
-        //找到邻国是敌国，改变颜色，army设置为1
-        LinkedList<Integer> enemy = new LinkedList<>();
+
+
         for (Country c:player.getCountryList()) {
-            if(c.getArmy() > 1) {
-                int num = 0;
-                String[] neighbours = c.getCountryList().split(" ");
-                for (String s : neighbours) {
-                    if (!countries.get(s).getColor().equals(c.getColor()) && num <= c.getArmy() - 1) {
 
-                        num++;
-                        enemy.add(Integer.parseInt(s));
-                        System.out.println("country " + c.getName() + " conquers country " + s + ",transfer army is 1");
-                        int armyNow = c.getArmy();
-                        System.out.println("Before attack,attacker " + c.getName() + " has armies " + armyNow);
-                        c.setArmy(armyNow - 1);
-                        System.out.println("After attack,attacker " + c.getName() + " has armies " + c.getArmy());
-                        countries.get(String.valueOf(c.getName())).setArmy(armyNow - 1);
-                        countries.get(s).setArmy(1);
-                        System.out.println("After attack,defender " + s + " has armies " + countries.get(s).getArmy());
-                        countries.get(s).setColor(c.getColor());
-                    }
-                }
-                if(num != 0)
-                    ans.add(String.valueOf(c.getName()));
-            }
+            int num = 0;
+            String[] neighbours = c.getCountryList().split(" ");
+            for (String s : neighbours) {
+                if (!countries.get(s).getColor().equals(c.getColor()) && num <= c.getArmy() - 1) {
 
-        }
-        if(enemy.size() != 0){
-            System.out.println("has enemy:" + enemy.size());
-            Iterator iter = playerSet.entrySet().iterator();
-            LinkedList<String> playerModify = new LinkedList<>();
-            while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                String name =(String)entry.getKey();
-                Player p = (Player) entry.getValue();
-                for (Integer i:enemy) {
-                    for (Country country:p.getCountryList()) {
-                        if(country.getName() == i){
-                            playerModify.add(name);
-                            System.out.println("player " + player.getPlayerName() +
-                                    " conquers player " + name + "'s country " + i);
-                            country.setArmy(1);
-                            country.setColor(player.getColor());
-                            player.getCountryList().add(country);
-                            p.getCountryList().remove(country);
-                            break;
+                    num++;
+                    //c 是attacker country，s 是defender country
+                    System.out.println("country " + c.getName() + " conquers country " + s + ",transfer army is 1");
+                    int armyNow = c.getArmy();
+                    System.out.println("Before attack,attacker " + c.getName() + " has armies " + armyNow);
+                    c.setArmy(armyNow - 1);
+                    System.out.println("After attack,attacker " + c.getName() + " has armies " + c.getArmy());
+                    countries.get(String.valueOf(c.getName())).setArmy(armyNow - 1);
+                    ans.add(s);
+                    countries.get(s).setArmy(1);
+//
+                    for (String pname : playerSet.keySet()) {
+                        if (playerSet.get(pname).getColor() == countries.get(s).getColor()) {
+                            playerSet.get(pname).getCountryList().remove(countries.get(s));
                         }
+
                     }
-                }
-                if(p.getCountryList().size() != 0){
-                    playerSet.put(name,p);
+                    countries.get(s).setColor(c.getColor());
+//                        newList.add(countries.get(s));
+//
+//                    }
+//                    System.out.println(player.getPlayerName()+ " conquers "+ s);
+//                }
+////                if(num != 0)
+//                    ans.add(String.valueOf(c.getName()));
+
 
                 }
             }
+        }
 
-            for (String s:playerModify) {
-                if(playerSet.containsKey(s) && playerSet.get(s).getCountryList().size() == 0)
-                    playerSet.remove(s);
-            }
+
+
+//        LinkedList<Country> cur=player.getCountryList();
+        System.out.println("this is in cheaterPlayer");
+        for(int i=0;i<ans.size();i++){
+            System.out.println(player.getPlayerName()+" conquer "+ans.get(i));
+        }
+//        player.setCountryList(cur);
+
+//        if(enemy.size() != 0){
+//            System.out.println("has enemy:" + enemy.size());
+//            Iterator iter = playerSet.entrySet().iterator();
+//            LinkedList<String> playerModify = new LinkedList<>();
+//            while (iter.hasNext()) {
+//                Map.Entry entry = (Map.Entry) iter.next();
+//                String name =(String)entry.getKey();
+//                Player p = (Player) entry.getValue();
+//                for (Integer i:enemy) {
+//                    for (Country country:p.getCountryList()) {
+//                        if(country.getName() == i){
+//                            playerModify.add(name);
+//                            System.out.println("player " + player.getPlayerName() +
+//                                    " conquers player " + name + "'s country " + i);
+//                            country.setArmy(1);
+//                            country.setColor(player.getColor());
+//                            player.getCountryList().add(country);
+//                            p.getCountryList().remove(country);
+//                            break;
+//                        }
+//                    }
+//                }
+//                if(p.getCountryList().size() != 0){
+//                    playerSet.put(name,p);
+//
+//                }
+//            }
+//
+//            for (String s:playerModify) {
+//                if(playerSet.containsKey(s) && playerSet.get(s).getCountryList().size() == 0)
+//                    playerSet.remove(s);
+//            }
 
             if(playerSet.size() == 1){
 
                 player.attackPhase("0","0","WIN",0,0,playerSet,countries,continents);
 
 
-            }
+
         }
 
 

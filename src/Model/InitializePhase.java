@@ -437,8 +437,18 @@ public class InitializePhase extends Observable implements Serializable {
 			ans = playerSet.get(playerAttack).attack(attacker, defender, mode, attDices,
 					defDices, playerSet, countries, continents);
 		}else {
-			ans=playerSet.get(attacker).attack(attacker, defender, mode, attDices,
-					defDices, playerSet, countries, continents);
+
+			if(strategy.equalsIgnoreCase("cheater")) {
+				ans=playerSet.get(attacker).attack(attacker, defender, mode, attDices,
+						defDices, playerSet, countries, continents);
+				changeCheater(ans,attacker);
+			}else{
+				ans=playerSet.get(attacker).attack(attacker, defender, mode, attDices,
+						defDices, playerSet, countries, continents);
+			}
+
+
+
 		}
 
 		if(ans.size()>0){
@@ -455,6 +465,22 @@ public class InitializePhase extends Observable implements Serializable {
 
 		return ans;
 
+	}
+
+
+	public void changeCheater(LinkedList<String> ans,String player){
+		for(int i=0;i<ans.size();i++){
+			System.out.println("update "+ans.get(i)+" information in countries and playerSet");
+			countries.get(ans.get(i)).setColor(playerSet.get(player).getColor());
+			countries.get(ans.get(i)).setArmy(1);
+			LinkedList<Country> cou=playerSet.get(player).getCountryList();
+			cou.add(countries.get(ans.get(i)));
+			playerSet.get(player).setCountryList(cou);
+
+		}
+		System.out.println(" finish updating");
+		setChanged();
+		notifyObservers();
 	}
 //
 
@@ -475,6 +501,12 @@ public class InitializePhase extends Observable implements Serializable {
 
 	}
 
+	/**
+	 * This method is used to justify can fortification or not.
+	 *
+	 * @param player Player's name.
+	 * @return true,if can fortification,otherwise is false.
+	 */
 	public boolean canFortification(String player){
 		boolean flag=false;
 		LinkedList<Country> playerCountry=playerSet.get(player).getCountryList();
