@@ -103,7 +103,7 @@ public class aggressivePlayer  implements Strategy, Serializable {
 
         }
 
-        ans.add(String.valueOf(strongest.getName()));
+        //ans.add(String.valueOf(strongest.getName()));
         if(allDefenders.size()>0) {
             System.out.println("the size");
             int i=0;
@@ -123,7 +123,7 @@ public class aggressivePlayer  implements Strategy, Serializable {
                         System.out.println("the attack information is "+ cur);
                         String[] readrecord = cur.split(" ");
                         if(readrecord[0].equals(attacker)) {
-                            System.out.println("attacker Player " + aggressiveAttack + " win");
+                            System.out.println("attacker Country " + aggressiveAttack + " win");
                             if(Integer.valueOf(readrecord[1])!= 0 ) {
                                 player.transfer(cur, strongest, allDefenders.get(i), countries);
                             }
@@ -148,16 +148,21 @@ public class aggressivePlayer  implements Strategy, Serializable {
 
                         if (!cur.equals("")) {
                             StringBuffer sb = new StringBuffer();
-                            sb.append(aggressiveDefend);
+                            sb.append(cur);
                             ans.add(sb.toString());
                         }
                         i++;
                     }
+            for(int k=0;k<ans.size();k++){
+                System.out.println("******* attack result information is *******");
+                System.out.println(ans.get(k));
+            }
         }else{
             System.out.println("There is no neibs in attack country");
         }
        // System.out.println("the defenders in aggressive attack are :");
         //System.out.println(ans);
+
 
         return ans;
 

@@ -70,6 +70,15 @@ public class BackEnd implements Observer, Serializable {
 
 	}
 
+	public BackEnd(HashMap <String, Country> countries,
+				   HashMap <String, Continent> continents,
+				   HashMap <String, Player> playerSet) {
+		this.countries = countries;
+		this.continents = continents;
+		this.playerSet = playerSet;
+
+	}
+
 	/**
 	 * The method judges the number of armies whether is greater than one or not.
 	 * 
@@ -392,6 +401,13 @@ public class BackEnd implements Observer, Serializable {
 				" in BackEnd *************************");
 
 		boolean canAttack = false;
+		System.out.println("AAA" + playerSet.size());
+		System.out.println("BBB" + player);
+		System.out.println("CCC" + playerSet.get(player));
+		System.out.println("The result of player is "+
+				playerSet.get(player).getPlayerName());
+		System.out.println("The country list of player is "+
+				playerSet.get(player).getCountryList().size());
 		LinkedList<Country> countrylist = playerSet.get(player).getCountryList();
 		System.out.println("********* Begin canAttack BendEnd *********");
 		for (int i = 0; i < countrylist.size(); i++) {

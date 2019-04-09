@@ -528,7 +528,10 @@ public class PlayView extends JFrame implements Observer  {
 				mode.setText(playerSet.get("1").getMode());
 
 				//当没有之后，全部跳转到1,更新国家的label
-				observable.Reinforcement("1");
+				String reinforceINf=observable.Reinforcement("1");
+				String[] inf=reinforceINf.split(" ");
+				String one="Add "+inf[1]+" armies to "+inf[0]+" countries";
+				showInformation(one,"Reinforcement 1");
 				if(playerSet.get("1").getMode().equalsIgnoreCase("human")){
 					armies.setText(String.valueOf(playerSet.get(nextP).getArmy()));
 				}else{
@@ -551,7 +554,8 @@ public class PlayView extends JFrame implements Observer  {
 
 					String ans = observable.Reinforcement(nextP);
 					//updateLabelsCountry();
-					if (!playerSet.get(nextP).getMode().equalsIgnoreCase("human")) {
+					if (!playerSet.get(nextP).getMode().equalsIgnoreCase("human") &&
+							!playerSet.get(nextP).getMode().equalsIgnoreCase("cheater")) {
 
 						String army = ans.split(" ")[0];
 						String strongest = ans.split(" ")[1];
@@ -570,7 +574,14 @@ public class PlayView extends JFrame implements Observer  {
 						armies.setText(String.valueOf(playerSet.get(nextP).getArmy()));
 						updateLabelsCountry();
 						noHuman();
-					} else {
+					} else if(playerSet.get(nextP).getMode().equalsIgnoreCase("cheater")){
+						showInformation("Cheater: Double armies to every country!", "Reinforcement "+nextP);
+						armies.setText("0");
+						updateLabelsCountry();
+						noHuman();
+
+					}
+					else {
 
 						System.out.println("The mode is : " + mode.getText() + " Player is " + name.getText());
 						JOptionPane.showMessageDialog(null, "enter reinforcement phase in human");
@@ -629,7 +640,7 @@ public class PlayView extends JFrame implements Observer  {
 			JOptionPane op = new JOptionPane(information, JOptionPane.INFORMATION_MESSAGE);
 			JDialog dialog = op.createDialog(information);
 			dialog.setTitle(name);
-			javax.swing.Timer timer = new javax.swing.Timer(1000, new ActionListener() {
+			javax.swing.Timer timer = new javax.swing.Timer(3000, new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					dialog.setVisible(false);
@@ -664,10 +675,14 @@ public class PlayView extends JFrame implements Observer  {
 				observable.Startup(name.getText(), cd);
 				updateLabelsCountry();
 
-				String nextp=b.nextplayer(name.getText());
-				if(nextp.equalsIgnoreCase(name.getText())){
+				String nextp = b.nextplayer(name.getText());
+				if (nextp.equalsIgnoreCase(name.getText())) {
 					String cc = observable.randomSelect(name.getText());
 					observable.Startup(name.getText(), cc);
+					//4.6 add
+					String curSelect = "Add One Army to " + cc;
+					String phasePlayer = currentPhase + " " + name.getText();
+					showInformation(curSelect, phasePlayer);
 					updateLabelsCountry();
 				}
 
@@ -680,8 +695,11 @@ public class PlayView extends JFrame implements Observer  {
 
 				armies.setText(String.valueOf(playerSet.get(name.getText()).getArmy()));
 
-				String s=currentPhase+" "+nextp;
-				showInformation("Add One Army",s);
+				//4.6 add
+				String s = currentPhase + " " + name.getText();
+				//String s=currentPhase+" "+nextp;
+				String countrys = "Add One Army to " + cd;
+				showInformation(countrys, s);
 
 				stateChangeStartUp("start up");
 				System.out.println(" ******** End of start up in noHuman **********");
@@ -722,6 +740,41 @@ public class PlayView extends JFrame implements Observer  {
 				ans = observable.attackPhase(name.getText(), "0",
 						"All_out", 0, 0, mode.getText());
 				//observable.Fortification("0","0",0);
+				if(!mode.getText().equalsIgnoreCase("benevolent")) {
+					showInformation("Player" + name.getText() + " is attacking ", "Attack " + name.getText());
+				}
+				System.out.println(" attack information is in PlayView");
+				if (!mode.getText().equalsIgnoreCase("cheater")) {
+
+					if (ans.size() > 0) {
+
+						for (int i = 0; i < ans.size(); i++) {
+							System.out.println(ans.get(i));
+							String[] attackResult = ans.get(i).split(" ");
+							if (attackResult[0].equalsIgnoreCase(name.getText())) {
+								if (!attackResult[1].equalsIgnoreCase("0")
+										&& !attackResult[2].equalsIgnoreCase("0")) {
+									System.out.println("********** change Win== true **********");
+									WIN = true;
+									break;
+								}
+							}
+						}
+
+
+						if (WIN) {
+							showInformation("Player"+name.getText() + " conquers! ", "Attack "+name.getText());
+						} else {
+							showInformation("Player"+name.getText() + " not conquers! ", "Attack "+name.getText());
+						}
+					}
+				}
+				if(mode.getText().equalsIgnoreCase("cheater")){
+					showInformation("Cheater: auto conquer neighbor countries!", "Attack "+name.getText());
+				}
+
+
+
 				attackNoHuman();
 				updateLabelsCountry();
 				isGetWin();
@@ -732,7 +785,10 @@ public class PlayView extends JFrame implements Observer  {
 			///////////////////////fortification///////////////////
 			if (currentPhase.equalsIgnoreCase("fortificaiton")) {
 
+
 				isGetWin();
+
+
 				fortificationNoHuman();
 				updateLabelsCountry();
 			}
@@ -792,11 +848,19 @@ public class PlayView extends JFrame implements Observer  {
 				System.out.println("Cannot Attack, enter fortification phase.");
 				phase.setText("Fortification");
 				currentPhase = "Fortification";
-				observable.Fortification(name.getText(),"0",0,
-						playerSet.get(String.valueOf(name.getText())).getMode());
-				updateLabelsCountry();
-				fortificationNoHuman();
-				noHuman();
+				if(observable.canFortification(name.getText())) {
+					observable.Fortification(name.getText(), "0", 0,
+							playerSet.get(String.valueOf(name.getText())).getMode());
+
+					showInformation("Player"+name.getText()+" Fortificaiton ","Fortificaiton "+name.getText());
+					updateLabelsCountry();
+					fortificationNoHuman();
+					noHuman();
+				}else{
+					phase.setText("Reinforcement");
+					currentPhase="Reinforcement";
+					stateChangeStartUp("Reinforcement");
+				}
 
 			}
 			System.out.println("************End reinforcementNoHuman *********");
@@ -854,7 +918,20 @@ public class PlayView extends JFrame implements Observer  {
 				currentPhase = "Fortification";
 				observable.Fortification(name.getText(),"0",0,
 						playerSet.get(String.valueOf(name.getText())).getMode());
+				if(!mode.getText().equalsIgnoreCase("cheater")) {
+					showInformation("Player"+name.getText() + " Fortificaiton ", "Fortificaiton "+name.getText());
+				}else{
+					showInformation("Player"+name.getText() + "Cheater: double armies in every country ", "Fortificaiton "+name.getText());
+
+				}
 				updateLabelsCountry();
+				if (WIN) {
+
+					String s=observable.earnCard(name.getText(),mode.getText());
+					System.out.println("Player "+name.getText()+" get one Card");
+					showInformation("Player "+name.getText()+" get "+s+" Card","Get Card "+name.getText());
+				}
+				WIN = false;
 //				phase.setText("Reinforcement");
 //				currentPhase="Reinforcement";
 //
@@ -872,10 +949,10 @@ public class PlayView extends JFrame implements Observer  {
 			System.out.println("***************** begin of fortificationNoHuman**************  ");
 			updateLabelsCountry();
 
-			if (WIN) {
-				observable.earnCard(name.getText());
-			}
-			WIN = false;
+//			if (WIN) {
+//				observable.earnCard(name.getText());
+//			}
+//			WIN = false;
 
 			System.out.println();
 			System.out.println();
@@ -1028,9 +1105,9 @@ public class PlayView extends JFrame implements Observer  {
 						System.out.println("**************Begin of phase " +
 								"= Fortification in MouseClick in PlayView*************************");
 
-						// earn card
+						// earn card--->not this phase in nohuman
 						if (WIN) {
-							observable.earnCard(name.getText());
+							observable.earnCard(name.getText(),mode.getText());
 						}
 						WIN = false;
 						System.out.println("Fortification, enter next phase Reinforcement, Change Player");
@@ -1274,6 +1351,7 @@ public class PlayView extends JFrame implements Observer  {
 							armies.setText(String.valueOf(playerSet.get(nextP).getArmy()));
 						}
 					} else {
+						System.out.println("The mode is : " + mode.getText() + " Player is " + name.getText());
 						String army = ans.split(" ")[0];
 						String strongest = ans.split(" ")[1];
 						String infomation = "Add " + army + " armies to " + strongest + " country";
@@ -1528,7 +1606,7 @@ public class PlayView extends JFrame implements Observer  {
 
 					// occupy a territory then obtain a card
 					if (WIN) {
-						observable.earnCard(name.getText());
+						observable.earnCard(name.getText(),mode.getText());
 					}
 					WIN = false;
 

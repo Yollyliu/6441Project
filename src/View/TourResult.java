@@ -1,8 +1,12 @@
 package View;
 
+import Model.Tournament;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Vector;
 
 public class TourResult extends JFrame{
@@ -11,21 +15,16 @@ public class TourResult extends JFrame{
     TourTable table;
     JTable jTable;
 
-    String M = "Map1 Map2 Map3";
-    String[] MArray = M.split(" ");
-    int MInt = MArray.length;
-    String P = "Aggressive Benevolent Random Cheater";
-    int G = 4;
-    int D = 30;
-    String result1 = "Aggressive Random Cheater Cheater";
-    String result2 = "Cheater Draw Cheater Aggressive";
-    String result3 = "Cheater Aggressive Cheater Draw";
-    String[] result1Array = result1.split(" ");
-    String[] result2Array = result2.split(" ");
-    String[] result3Array = result3.split(" ");
-    String[][] results = new String[][]{result1Array, result2Array, result3Array};
+    Tournament tournament=new Tournament();
 
-    public TourResult() {
+    String M;
+    String[] MArray;
+    int MInt;
+    String P;
+    int G;
+    int D;
+
+    public TourResult(Tournament tournament) {
 //        EventQueue.invokeLater(new Runnable() {
 //
 //            /**
@@ -45,7 +44,45 @@ public class TourResult extends JFrame{
 //                }
 //            }
 //        });
+        System.out.println("get tournament behaivoir "+ tournament.getBehavoirs().size());
+        this.tournament = tournament;
+        System.out.println("CHILEME");
+        System.out.println("The behavior is in TourResult"+ tournament.getBehavoirs().size());
 
+        tournament.runTourn();
+        System.out.println("The behavior is in TourREsult"+ tournament.getBehavoirs().size());
+        LinkedList<String> mapList = tournament.getMaps();
+        for (int i = 0; i < mapList.size(); i++) {
+            M = mapList.get(i) + " ";
+        }
+        M = M.substring(0, M.length()-1);
+
+        MArray = M.split(" ");
+        MInt = MArray.length;
+
+        ArrayList pList = tournament.getBehavoirs();
+        System.out.println("********** tournament.getBehavoirs ******"+tournament.getBehavoirs().size());
+//        for (int i = 0; i < pList.size(); i++) {
+//            P = pList.get(i) + " ";
+//        }
+//
+//        P = P.substring(0, P.length()-1);
+        StringBuffer ss=new StringBuffer();
+        for(int i=0;i<tournament.getBehavoirs().size()-1;i++){
+            ss.append(tournament.getBehavoirs().get(i));
+            ss.append(" ");
+        }
+        ss.append(tournament.getBehavoirs().get(tournament.getBehavoirs().size()-1));
+        P=ss.toString();
+        System.out.println("PPPP" + ss.toString());
+        M = "";
+        for (int i = 0; i < tournament.getMaps().size()-1; i++) {
+            M = M + tournament.getMaps().get(i)+" ";
+        }
+        M= M+tournament.getMaps().get(tournament.getMaps().size()-1);
+
+        G = tournament.getGameTime();
+        D = tournament.getGameTurn();
         jFrame.add(new TourResultPane(M, P, G, D));
         jFrame.pack();
         jFrame.setLocationRelativeTo(null);
@@ -54,6 +91,7 @@ public class TourResult extends JFrame{
 
     public class TourResultPane extends JLayeredPane{
         public TourResultPane(String M, String P, int G, int D) {
+
             JLabel map = new JLabel("M: " + M);
             add(map);
             map.setBounds(50, 150, 400, 25);
@@ -71,19 +109,11 @@ public class TourResult extends JFrame{
             round.setBounds(50, 225, 400, 25);
 
             String[] maps = M.split(" ");
+            MInt = tournament.getResultInformation().size();
+            System.out.println("MINTTTTT" + MInt);
 
-            Object[][] tableData = {
-                    new Object[]{"     ", "Game" + "1", "Game" + "2", "Game" + "3", "Game" + "4"},
-                    new Object[]{maps[0], "Aggressive", "Random", "Cheater", "Cheater"},
-                    new Object[]{maps[1], "Cheater", "Draw", "Cheater", "Aggressive"},
-                    new Object[]{maps[2], "Cheater", "Aggressive", "Cheater", "Draw"}
-            };
-
-            Object[] columnTilte = {"     ", "Game1", "Game2", "Game3", "Game4"};
-            //DefaultTableModel model = new DefaultTableModel();
-
-            Object[][] cellData = new Object[4][5];
-            Object[] columTitle = new Object[5];
+            Object[][] cellData = new Object[MInt + 1][G + 1];
+            Object[] columTitle = new Object[G + 1];
 
             dataBase(cellData, columTitle);
             //table = new TourTable(cellData, columnTilte);
@@ -106,13 +136,38 @@ public class TourResult extends JFrame{
     }
 
     public void dataBase(Object[][] cellData, Object[] columTitle){
+
+        LinkedList<String> resultStrings = tournament.getResultInformation();
+        System.out.println("resultStrings "+tournament.getResultInformation().size());
+
+        for(int i=0;i<resultStrings.size();i++){
+            System.out.println(resultStrings.get(i));;
+        }
+
+
+
+        System.out.println("resultStrings "+resultStrings.size());
+        int row=resultStrings.size();
+        int colomun=resultStrings.get(0).split(" ").length;
+        String[][] results=new String[row][colomun];
+        //String[][] results = new String[MInt][G];
+        resultStrings.get(0).split(" ");
+
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < colomun; j++) {
+                String[] temp = resultStrings.get(i).split(" ");
+                results[i][j] = temp[j];
+            }
+        }
+
         String firstLine = "     ";
         //Vector v = new Vector();
         //v.add(firstLine);
         cellData[0][0] = firstLine;
         columTitle[0] = firstLine;
 
-        for (int i = 0; i < G; i++) {
+        for (int i = 0; i < colomun; i++) {
             int j = i + 1;
             //v.add("Game " + j);
             cellData[0][j] = "Game " + j;
@@ -121,22 +176,17 @@ public class TourResult extends JFrame{
 
         String data = "maps";
         //Vector v1 = new Vector();
-        for (int i = 0; i < MInt; i++) {
+        for (int i = 0; i < row; i++) {
             int k = i + 1;
             //v1.add("Map " + k);
             cellData[k][0] = "Map " + k;
-            for (int j = 0; j < G; j++) {
+            for (int j = 0; j < colomun; j++) {
                 //v1.add(results[i][j]);
                 cellData[k][j + 1] = results[i][j];
             }
             //model.addRow(v1);
         }
     }
-
-    public static void main(String[]args){
-            new TourResult();
-        }
-
 
 }
 

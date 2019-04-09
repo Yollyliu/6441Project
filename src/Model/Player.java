@@ -26,6 +26,7 @@ public class Player implements Serializable {
 	private int changeCardTime = 1;
 	private Strategy strategy;
 	private String mode="";
+	private Attack attack = new Attack();
 
 
 
@@ -49,6 +50,14 @@ public class Player implements Serializable {
 		this.mode=behavoir;
 
 		this.strategy= strategyFactory.getBehavior(behavoir,this);
+	}
+
+	public Attack getAttack() {
+		return attack;
+	}
+
+	public void setAttack(Attack attack) {
+		this.attack = attack;
 	}
 
 	public Strategy getStrategy() {
@@ -292,7 +301,7 @@ public class Player implements Serializable {
 							  HashMap<String, Country> countries,
 							  HashMap<String, Continent> continents) {
 
-		Attack attack = new Attack(countries, continents, playerSet, attacker,
+		attack = new Attack(countries, continents, playerSet, attacker,
 				defender, mode, attDices, defDices);
 
 		String result = attack.attacking(this.mode);// invoking attacking function

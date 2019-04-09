@@ -23,7 +23,7 @@ public class Attack implements Serializable {
 	private int attDices;
 	private int defDices;
 	private static boolean HAS_CARD = false;
-	public static boolean WIN = false;
+	public  static boolean WIN = false;
 
 	/**
 	 * This is a no-argument constructor.
@@ -246,6 +246,10 @@ public class Attack implements Serializable {
 		return WIN;
 	}
 
+	public static void setWIN(boolean WIN) {
+		WIN = WIN;
+	}
+
 	/**
 	 * This method implements according different mode invoking different attack
 	 * function.
@@ -255,15 +259,22 @@ public class Attack implements Serializable {
 	public String attacking(String behavior) {
 
 		switch (mode) {
-		case "All_Out":
-			System.out.println("Get into All_Out mode.");
-			return allOut();
-		case "One_Time":
-			System.out.println("Get into One_Time mode.");
-			return oneTime();
-		default:
-			System.out.println("Mode function invoking Failure");
-			break;
+
+			case "All_Out":
+				System.out.println("Get into All_Out mode.");
+				return allOut();
+
+			case "One_Time":
+				System.out.println("Get into One_Time mode.");
+				return oneTime();
+
+			case "WIN":
+				System.out.println("Get into WIN mode");
+				return win();
+
+			default:
+				System.out.println("Mode function invoking Failure");
+				break;
 		}
 		System.out.println("This is in Attacking function");
 		return "Failure";
@@ -286,6 +297,12 @@ public class Attack implements Serializable {
 		}
 		System.out.println("Cannot find the player!!!");
 		return null;
+	}
+
+	public String win(){
+		String s = "win";
+		this.WIN = true;
+		return s;
 	}
 
 	/**

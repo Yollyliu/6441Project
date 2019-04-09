@@ -232,8 +232,11 @@ public class TourInitGame extends JFrame {
                     if (behaviors.size() < 2 && maps.size() < 1 && gameNumber == 0 && turnNumber == 0){
                         JOptionPane.showMessageDialog(null, "Please Fill Right");
                     } else {
-                        new Tournament(behaviors, maps, gameNumber, turnNumber);
+                        Tournament tournament = new Tournament(behaviors, maps, gameNumber, turnNumber);
+
+                        System.out.println("Get behavoir in TourInitGame "+tournament.getBehavoirs().size());
                         frame.dispose();
+                        new TourResult(tournament);
                     }
                 }
             });

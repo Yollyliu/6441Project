@@ -1,11 +1,13 @@
 package Model;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import View.CardView;
 
@@ -208,10 +210,10 @@ public class InitializePhase extends Observable {
 			armyDefault = 13;
 			break;
 		case 4:
-			armyDefault = 30;
+			armyDefault = 13;
 			break;
 		case 5:
-			armyDefault = 25;
+			armyDefault = 13;
 			break;
 		default:
 			break;
@@ -462,6 +464,16 @@ public class InitializePhase extends Observable {
 
 	}
 
+	public boolean canFortification(String player){
+		boolean flag=false;
+		LinkedList<Country> playerCountry=playerSet.get(player).getCountryList();
+		for(int i=0;i<playerCountry.size();i++){
+			if(countries.get(String.valueOf(playerCountry.get(i).getName())).getArmy()>1){
+				flag=true;
+			}
+		}
+		return flag;
+	}
 	/**
 	 * This method a valid fortification.
 	 *
@@ -521,6 +533,26 @@ public class InitializePhase extends Observable {
 				System.out.println("////////////// get fortification of result in InitializePhase ////////////");
 				System.out.println("get result of fortification no human, result is : " + s);
 			}
+		}else if(mode.equalsIgnoreCase("random")){
+			if(playerSet.get(from).getCountryList().size()<2){
+				System.out.println("The "+ from+ " countries are small than 2." +
+						" No need to fortificaiton");
+			}else {
+				System.out.println("InitializePhase Random Fortificaiton");
+				String s = playerSet.get(from).fortification(countries.get(0), countries.get(1), move, countries);
+				System.out.println("////////////// get fortification of result in InitializePhase ////////////");
+				System.out.println("get result of fortification no human, result is : " + s);
+			}
+		}else if(mode.equalsIgnoreCase("cheater")){
+			if(playerSet.get(from).getCountryList().size()<2){
+				System.out.println("The "+ from+ " countries are small than 2." +
+						" No need to fortificaiton");
+			}else {
+				System.out.println("InitializePhase cheater Fortificaiton");
+				String s = playerSet.get(from).fortification(countries.get(0), countries.get(1), move, countries);
+				System.out.println("////////////// get fortification of result in InitializePhase ////////////");
+				System.out.println("get result of fortification no human, result is : " + s);
+			}
 		}
 
 		setChanged();
@@ -565,36 +597,47 @@ public class InitializePhase extends Observable {
 		}
 
 
+
+
 	/**
      * This method is to earnCard.
      *
      * @param player Current player.
      */
-	public void earnCard(String player) {
+	public String earnCard(String player,String mode) {
 		int card = (int) (1 + Math.random() * 3);
 		Card c = new Card();
 		LinkedList<Card> list = new LinkedList<>();
+		String s="";
 		switch (card) {
 		case 1:
 
 			// infantry
 			c.setName("i");
+			s="infantry";
 			list = playerSet.get(player).getCardList();
 			list.add(c);
 			playerSet.get(player).setCardList(list);
 			System.out.println("you got infantry card");
-			JOptionPane.showMessageDialog(null, "you got infantry card");
+			if(mode.equalsIgnoreCase("human")) {
+				JOptionPane.showMessageDialog(null,
+						"you got infantry card");
+			}
 			break;
 		case 2:
 
 			// cavalry
 			c.setName("c");
+			s="cavalry";
 			list = playerSet.get(player).getCardList();
 			list.add(c);
 
 			playerSet.get(player).setCardList(list);
 			System.out.println("You got cavalry card");
-			JOptionPane.showMessageDialog(null, "you got cavalry card");
+			if(mode.equalsIgnoreCase("human")) {
+				JOptionPane.showMessageDialog(null,
+						"you got cavalry card");
+			}
 			break;
 		case 3:
 
@@ -602,16 +645,22 @@ public class InitializePhase extends Observable {
 			c.setName("a");
 			list = playerSet.get(player).getCardList();
 			list.add(c);
+			s="artillery";
 
 			playerSet.get(player).setCardList(list);
 			System.out.println("you got artillery card");
-			JOptionPane.showMessageDialog(null, "you got artillery card");
+			if(mode.equalsIgnoreCase("human")) {
+				JOptionPane.showMessageDialog(null,
+						"you got artillery card");
+			}
 			break;
 
 		}
 
+
 		setChanged();
 		notifyObservers(this);
+		return s;
 	}
 
 	/**
