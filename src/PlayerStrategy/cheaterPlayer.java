@@ -16,7 +16,8 @@ public class cheaterPlayer implements Strategy{
     }
 
     @Override
-    public void Reinforcement() {
+    public void Reinforcement(HashMap<String, Player> playerSet,
+                              HashMap<String, Country> countries) {
 
     }
 

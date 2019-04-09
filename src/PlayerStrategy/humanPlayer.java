@@ -19,7 +19,8 @@ public class humanPlayer implements Strategy{
     }
 
     @Override
-    public void Reinforcement() {
+    public void Reinforcement(HashMap<String, Player> playerSet,
+                              HashMap<String, Country> countries) {
         System.out.println(" hello, we are in human player reinforcement");
         player.getAllArmies();
     }
@@ -57,10 +58,10 @@ public class humanPlayer implements Strategy{
                 }
             }
             for(String key:countries.keySet()) {
-                if (key.equals(from.getName())) {
+                if (key.equals(String.valueOf(from.getName()))) {
                     countries.get(key).setArmy(start);
                 }
-                if (key.equals(to.getName())) {
+                if (key.equals(String.valueOf(to.getName()))) {
                     countries.get(key).setArmy(end);
                 }
             }

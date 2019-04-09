@@ -621,5 +621,4 @@ public class Attack {
 			this.WIN = true;
 		}
 	}
-
 }

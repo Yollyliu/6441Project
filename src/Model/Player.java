@@ -26,10 +26,6 @@ public class Player {
 	private Strategy strategy;
 
 
-	private int attDices;
-	private int defDices;
-	private Country attackCountry;
-	private Country defendCountry;
 
 
 	/**
@@ -52,21 +48,6 @@ public class Player {
 		this.strategy= strategyFactory.getBehavior(behavoir,this);
 	}
 
-	public int getAttDices() {
-		return attDices;
-	}
-
-	public void setAttDices(int attDices) {
-		this.attDices = attDices;
-	}
-
-	public int getDefDices() {
-		return defDices;
-	}
-
-	public void setDefDices(int defDices) {
-		this.defDices = defDices;
-	}
 
 	/**
 	 * This method obtains player name.
@@ -180,9 +161,10 @@ public class Player {
 
 	//////////////////////// Reinforcement /////////////////////////////////////
 
-	public void reinforcement(){
+	public void reinforcement(HashMap<String, Player> playerSet,
+			HashMap<String, Country> countries){
 
-		this.strategy.Reinforcement();
+		this.strategy.Reinforcement(playerSet,countries);
 	}
 
 
@@ -210,6 +192,25 @@ public class Player {
 			n = (int) Math.floor(n);
 			return n;
 		}
+	}
+
+	public void updateReinforcement(int country, int army,
+						   HashMap<String, Player> playerSet,
+						   HashMap<String, Country> countries) {
+
+
+		for(int i=0;i<countryList.size();i++){
+			if(countryList.get(i).getName()==country){
+				countryList.get(i).setArmy(army);
+			}
+			break;
+		}
+		setArmy(0);
+
+		playerSet.get(this.playerName).setArmy(0);
+		countries.get(String.valueOf(country)).setArmy(army);
+
+
 	}
 
 
@@ -287,6 +288,130 @@ public class Player {
 
 	}
 
+	public boolean canTransfer(int start, int end,
+							   HashMap<String, Country> countries) {
+		int maxCountry = returnMax(countries);
+		FindPath fp = new FindPath(maxCountry);
+		Iterator<Map.Entry<String, Country>> iterator = countries.entrySet().iterator();
+
+		// build graph
+		while (iterator.hasNext()) {
+			Map.Entry<String, Country> entry = iterator.next();
+			int from = Integer.valueOf(entry.getKey());
+			String[] clist = entry.getValue().getCountryList().split(" ");
+			for (int i = 0; i < clist.length; i++) {
+				fp.addEdge(from, Integer.valueOf(clist[i]));
+			}
+
+		}
 
 
+		fp.printAllPaths(start, end);
+
+		ArrayList<ArrayList<Integer>> allpath = new ArrayList<>();
+
+		String[] paths = fp.allpath.split("#");
+		for (int i = 0; i < paths.length; i++) {
+			ArrayList<Integer> onepath = new ArrayList<>();
+			String[] line = paths[i].split(" ");
+			for (int j = 0; j < line.length; j++) {
+				onepath.add(Integer.valueOf(line[j]));
+			}
+			allpath.add(onepath);
+		}
+		System.out.println(allpath);
+		boolean result = checkPath(allpath);
+		return result;
+
+	}
+
+	/**
+	 * The method is to check whether exists a path that can execute transfer method.
+	 *
+	 * @param Path All the path from start country to destination.
+	 * @return true If there is a path that belongs to this player.
+	 */
+	private boolean checkPath(ArrayList<ArrayList<Integer>> Path) {
+		boolean isOwn = false;
+
+
+		for (int i = 0; i < Path.size(); i++) {
+			boolean temp = true;
+			for (int j = 0; j < Path.get(i).size(); j++) {
+				boolean isMatch = rightcountry(String.valueOf(Path.get(i).get(j)));
+
+				if (!isMatch) {
+					temp = false;
+
+					break;
+				}
+			}
+			if (temp) {
+				isOwn = true;
+				break;
+
+			}
+
+		}
+
+		return isOwn;
+	}
+
+
+	/**
+	 * The method checks whether current player click right country.
+	 *
+	 * @param ccountry Current country.
+	 * @return true if the player owns the country.
+	 */
+	public boolean rightcountry(String ccountry) {
+		boolean match = false;
+		LinkedList<Country> findCountries = this.getCountryList();
+		for (Iterator<Country> iterator = findCountries.iterator(); iterator.hasNext();) {
+			String s = String.valueOf(iterator.next().getName());
+			if (ccountry.equals(s)) {
+				match = true;
+			}
+
+		}
+		return match;
+	}
+
+	private int returnMax(HashMap<String, Country> countries) {
+		int max = 0;
+		for (String m : countries.keySet()) {
+			int temp = countries.get(m).getName();
+			if (temp > max) {
+				max = temp;
+			}
+
+		}
+		return max + 1;
+	}
+
+	//put all armies-1 to another country
+	public void updateFortification(Country one, Country two,
+									HashMap<String, Country> countries){
+
+		int first=one.getArmy()+two.getArmy()-1;
+		for(int k=0;k<getCountryList().size();k++) {
+
+			if (getCountryList().get(k).getName() == one.getName()) {
+
+				one.setArmy(first);
+			}
+			if (getCountryList().get(k).getName() == two.getName()) {
+				two.setArmy(1);
+			}
+		}
+		for(String key:countries.keySet()) {
+			if (Integer.valueOf(key)==one.getName()) {
+				countries.get(key).setArmy(first);
+			}
+			if (Integer.valueOf(key)==two.getName()) {
+				countries.get(key).setArmy(1);
+			}
+		}
+
+	}
 }

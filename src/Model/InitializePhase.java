@@ -291,7 +291,7 @@ public class InitializePhase extends Observable {
 	 * @param player Player name.
 	 */
 	public void Reinforcement(String player) {
-		playerSet.get(player).reinforcement();
+		playerSet.get(player).reinforcement(playerSet,countries);
 		setChanged();
 		notifyObservers(this);
 	}
@@ -583,7 +583,6 @@ public class InitializePhase extends Observable {
 			if (ccountry.equals(s)) {
 				match = true;
 			}
-
 		}
 		return match;
 	}

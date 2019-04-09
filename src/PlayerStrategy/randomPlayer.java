@@ -4,7 +4,9 @@ import Model.Continent;
 import Model.Country;
 import Model.Player;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 public class randomPlayer implements Strategy{
 
@@ -18,7 +20,9 @@ public class randomPlayer implements Strategy{
 
 
     @Override
-    public void Reinforcement() {
+    public void Reinforcement(HashMap<String, Player> playerSet,
+                              HashMap<String, Country> countries) {
+
 
     }
 
@@ -27,6 +31,17 @@ public class randomPlayer implements Strategy{
                        int defDices, HashMap<String, Player> playerSet,
                        HashMap<String, Country> countries,
                        HashMap<String, Continent> continents){
+
+        Country strongest=
+                player.getCountryList().stream().max(
+                        Comparator.comparing(Country::getArmy)).get();
+
+        String neib=strongest.getCountryList();
+
+
+
+
+
         return "";
 
     }

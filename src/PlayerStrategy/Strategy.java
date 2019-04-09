@@ -8,7 +8,8 @@ import java.util.HashMap;
 
 public interface Strategy {
 
-    public void Reinforcement();
+    public void Reinforcement(HashMap<String, Player> playerSet,
+                              HashMap<String, Country> countries);
     public String Attack(String attacker, String defender, String mode, int attDices,
                        int defDices, HashMap<String, Player> playerSet,
                        HashMap<String, Country> countries,
