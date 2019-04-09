@@ -9,23 +9,51 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+/**
+ * <h1>humanPlayer</h1>
+ * The humanPlayer class is for implement all interface method for the human player.
+ *
+ * @author tianshu_ji, shuo_chi, youlin_liu
+ * @version 3.0
+ * @since 2019-04-07
+ */
 public class humanPlayer implements Strategy, Serializable {
 
     String behavior="";
     Player player;
 
+    /**
+     * This method is to get the behavior.
+     *
+     * @return behavior.
+     */
     public String getBehavior() {
         return behavior;
     }
 
+    /**
+     * This method is to set the behavior.
+     *
+     * @param behavior a behavior to set.
+     */
     public void setBehavior(String behavior) {
         this.behavior = behavior;
     }
 
+    /**
+     * This method is to get the player.
+     *
+     * @return the player object.
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * This method is to set the player.
+     *
+     * @param player a player to set.
+     */
     public void setPlayer(Player player) {
         this.player = player;
     }

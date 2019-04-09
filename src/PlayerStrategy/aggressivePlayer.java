@@ -11,6 +11,14 @@ import java.util.stream.Collectors;
 
 import static java.lang.Thread.sleep;
 
+/**
+ * <h1>aggressivePlayer</h1>
+ * The aggressivePlayer class is for implement all interface method for the aggressive player.
+ *
+ * @author tianshu_ji, shou_chi, youlin_liu
+ * @version 3.0
+ * @since 2019-04-07
+ */
 public class aggressivePlayer  implements Strategy, Serializable {
 
     String behavior="";
@@ -168,7 +176,13 @@ public class aggressivePlayer  implements Strategy, Serializable {
 
     }
 
-
+    /**
+     * This method is to get hte strongest country.
+     *
+     * @param playerSet a hash map stores all the players.
+     * @param attacker the name of the attacker.
+     * @return the strongest country list.
+     */
     public List<Country> getStrongestCountry(
             HashMap<String, Player> playerSet,String attacker){
 
@@ -183,6 +197,13 @@ public class aggressivePlayer  implements Strategy, Serializable {
                 .collect(Collectors.toList()));
     }
 
+    /**
+     * This method is to get the strongest countries which have neighbors.
+     *
+     * @param strongest the strongest country.
+     * @param countries a hash map countries all the countries.
+     * @return the defender list.
+     */
     public LinkedList<Country> isStrongestWithNeib(Country strongest,
                                        HashMap<String, Country> countries){
         LinkedList<Country> allDefenders=new LinkedList <>();

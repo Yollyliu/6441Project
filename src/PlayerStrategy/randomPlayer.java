@@ -8,6 +8,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
+
+/**
+ * <h1>randomPlayer</h1>
+ * The randomPlayer class is for implement all interface method for the random player.
+ *
+ * @author tianshu_ji, shuo_chi, youlin_liu
+ * @version 3.0
+ * @since 2019-04-07
+ */
 //A random computer player strategy that reinforces random a random country,
 //attacks a random number of times a random country, and fortifies a random
 //country, all following the standard rules for each phase.
@@ -164,6 +173,12 @@ public class randomPlayer implements Strategy{
         return s;
     }
 
+    /**
+     * This is the method to random select a country.
+     *
+     * @param countryList a list stores the countries of the player.
+     * @return the name of the country to be random selected.
+     */
     public String randomSelect(LinkedList<Country> countryList){
 
         System.out.println(" In random select: the player is "+player.getPlayerName());
@@ -177,6 +192,12 @@ public class randomPlayer implements Strategy{
         return findc;
 
     }
+
+    /**
+     * This is the method to random select the attacker.
+     *
+     * @return the name of the attacker to be random selected.
+     */
     public String randomAttacker(){
         System.out.println("In random attacker selected : player is " + player.getPlayerName());
         LinkedList<Country> attackers = new LinkedList<>();
@@ -188,6 +209,14 @@ public class randomPlayer implements Strategy{
         return randomAttacker;
     }
 
+    /**
+     * This is the method to update the information of all changed in attack phase.
+     *
+     * @param cur the current records.
+     * @param attacker the name of attacker.
+     * @param defender the name of defender.
+     * @param countries a hash map stores all countries.
+     */
     public void updateAttack(String cur,String attacker,String defender,HashMap<String,Country> countries){
         String[] records = cur.split(" ");
         Random random = new Random();
