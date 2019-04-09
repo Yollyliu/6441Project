@@ -289,6 +289,13 @@ public class InitializePhase extends Observable {
 		}
 	}
 
+	/**
+	 * This method is to random select a country of a player.
+	 *
+	 * @param key The name of the player.
+	 * @return the name of the random country selected.
+	 */
+
 	public String randomSelect(String key){
 
 		System.out.println(" In random select Initialize: the player is "+key);
@@ -332,6 +339,7 @@ public class InitializePhase extends Observable {
 	 * This method implements Reinforcement phase.
 	 * 
 	 * @param player Player name.
+	 * @return the name of country to be reinforced.
 	 */
 	public String Reinforcement(String player) {
 		System.out.println();
@@ -396,6 +404,7 @@ public class InitializePhase extends Observable {
 	 * @param mode     Attack mode which player chooses.
 	 * @param attDices The number of dices attacker chooses.
 	 * @param defDices The number of dices defender chooses.
+	 * @param strategy The strategy of current player.
 	 * @return The result of attack phase.
 	 */
 	public LinkedList<String> attackPhase(String attacker, String defender, String mode,
@@ -480,6 +489,7 @@ public class InitializePhase extends Observable {
 	 * @param from Starting country.
 	 * @param to   Target country.
 	 * @param move The number of armies to be moved.
+	 * @param mode The fortification mode to be chosen.
 	 */
 	public void Fortification(String from, String to, int move,String mode) {
 
@@ -559,6 +569,13 @@ public class InitializePhase extends Observable {
 		notifyObservers(this);
 	}
 
+	/**
+	 * This method is to fortificate armies from country one to country two.
+	 *
+	 * @param one The country which armies moving out.
+	 * @param two The country which armies moving in.
+	 * @param player The name of the player.
+	 */
 
 	public void updateFortification(Country one, Country two,String player){
 
@@ -603,6 +620,8 @@ public class InitializePhase extends Observable {
      * This method is to earnCard.
      *
      * @param player Current player.
+	 * @param mode The mode to be chosen.
+	 * @return The card type earned.
      */
 	public String earnCard(String player,String mode) {
 		int card = (int) (1 + Math.random() * 3);
@@ -762,7 +781,12 @@ public class InitializePhase extends Observable {
 		return match;
 	}
 
-
+	/**
+	 * The method is to change card automatically.
+	 *
+	 * @param player The name of the player.
+	 * @return The result of cards gotten.
+	 */
 	public LinkedList<String> autoChangeCard(String player){
 
 		LinkedList<String> ans=new LinkedList <>();
@@ -810,6 +834,14 @@ public class InitializePhase extends Observable {
 
 	}
 
+	/**
+	 * The method is to delete card when the player has one of three types of cards.
+	 *
+	 * @param player The name of player.
+	 * @param one The card type one.
+	 * @param two The card type two.
+	 * @param three The card type three.
+	 */
 	public void deleteCard(Player player,String one,
 						   String two, String three ){
 		for (int i = 0; i < player.getCardList().size(); i++) {
@@ -852,6 +884,14 @@ public class InitializePhase extends Observable {
 		}
 		return max + 1;
 	}
+
+	/**
+	 * This method is to transfer armies after attacking.
+	 *
+	 * @param record A record to store different result of attacking.
+	 * @param att The attacking country.
+	 * @param def The defending country.
+	 */
 
 	public void Transfer(String record, Country att, Country def) {
 		boolean flag=false;
