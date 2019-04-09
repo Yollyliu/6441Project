@@ -247,6 +247,9 @@ public class aggressivePlayer  implements Strategy, Serializable {
         frontNumb=player.Front(countries);
         int length=newCountryList.size();
 
+
+
+
         System.out.println();
         for(int i=0;i<length;i++) {
 
@@ -288,6 +291,13 @@ public class aggressivePlayer  implements Strategy, Serializable {
                         " Army is "+one.getArmy());
             }
         }
+
+//
+//        for (Country c:player.getCountryList()) {
+//            int armyNow = c.getArmy();
+//            c.setArmy(armyNow+1);
+//            countries.get(String.valueOf(c.getName())).setArmy(armyNow+1);
+//        }
 
         return s;
     }

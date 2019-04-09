@@ -211,6 +211,7 @@ public class PlayView extends JFrame implements Observer  {
 				objectOutputStream.writeObject(b);
 				objectOutputStream.writeObject(dominationView);
 				objectOutputStream.writeObject(mode);
+				objectOutputStream.writeObject(WIN);
 
 				objectOutputStream.close();
 				fileOutputStream.close();
@@ -241,6 +242,7 @@ public class PlayView extends JFrame implements Observer  {
 				BackEnd saveB;
 				DominationView saveDominationView;
 				JLabel saveMode;
+				boolean saveWIN;
 
 
 
@@ -260,11 +262,12 @@ public class PlayView extends JFrame implements Observer  {
 				saveB = (BackEnd) objectInputStream.readObject();
 				saveDominationView = (DominationView) objectInputStream.readObject();
 				saveMode = (JLabel) objectInputStream.readObject();
+				saveWIN = (Boolean) objectInputStream.readObject();
 
 				objectInputStream.close();
 				fileInputStream.close();
 
-				if (lineMap != null && countries != null && continents != null && playerSet != null && name != null && color != null && armies != null && currentPhase != null && phase != null && labelsCountry != null){
+				if (lineMap != null && countries != null && continents != null && playerSet != null && name != null && color != null && armies != null && currentPhase != null && phase != null && labelsCountry != null && b != null && dominationView != null && mode != null){
 					removeAll();
 
 					lineMap = saveLineMap;
@@ -280,6 +283,7 @@ public class PlayView extends JFrame implements Observer  {
 					b = saveB;
 					dominationView = saveDominationView;
 					mode = saveMode;
+					WIN = saveWIN;
 
 					frame.setEnabled(true);
 //					for (JLabel country : labelsCountry) {
@@ -288,37 +292,84 @@ public class PlayView extends JFrame implements Observer  {
 					observable.setCountries(countries);
 					observable.setContinents(continents);
 					observable.setPlayerSet(playerSet);
-					dominationView = new DominationView(observable);
+					//dominationView = new DominationView(observable);
 					observable.addObserver(dominationView);
 
-					paintCountry(countries);
+					File image = new File("resource/tower.png");
+//			LinkedList<JLabel> labelsCountry=new LinkedList <>();
+
+					for (String key : countries.keySet()) {
+
+						Point start = countries.get(key).getLocation();
+						String continent = countries.get(key).getContinent() + " " + countries.get(key).getArmy();
+
+						String countryList = countries.get(key).getCountryList();
+						countries.get(key).setCountryList(countryList + " ");
+						String[] link = countryList.split(" ");
+						try {
+							BufferedImage img = ImageIO.read(image);
+
+							int width = img.getWidth();
+							int height = img.getHeight();
+
+							WritableRaster raster = img.getRaster();
+							for (int xx = 0; xx < width; xx++) {
+								for (int yy = 0; yy < height; yy++) {
+									int[] pixels = raster.getPixel(xx, yy, (int[]) null);
+									pixels[0] = countries.get(key).getColor().getRed();
+									pixels[1] = countries.get(key).getColor().getGreen();
+									pixels[2] = countries.get(key).getColor().getBlue();
+									raster.setPixel(xx, yy, pixels);
+								}
+
+							}
+
+							JLabel label = new JLabel(new ImageIcon(img));
+							label.setSize(label.getPreferredSize());
+							label.setLocation(start);
+							String labelInfor=key+":"+" "+continent;
+							label.setText(labelInfor);
+							label.setName(key);
+							label.setHorizontalTextPosition(JLabel.CENTER);
+							label.setVerticalTextPosition(JLabel.CENTER);
+							label.addMouseListener(ih);
+							label.addMouseMotionListener(ih);
+							add(label);
+							labelsCountry.add(label);
+
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+
+						for (int i = 0; i < link.length; i++) {
+							if (countries.containsKey(link[i])) {
+								Point end = countries.get(link[i]).getLocation();
+								lineMap.put(key + " " + link[i], new Line(start, end));
+							}
+						}
+					}
 
 					repaint();
 
-					// create button country
-					//JButton phase1 = phase;
-					// create button country
-					phase = new JButton("start up phase");
-					currentPhase = "start up";
+					phase.setText(currentPhase);
 					phase.setName("phase");
 					phase.setBackground(Color.green);
 					phase.setBounds(400, 600, 200, 50);
 					phase.addMouseListener(ih);
 					add(phase);
 
-					// player name color label
 					JLabel player = new JLabel("Player: ");
 					player.setBounds(1000, 20, 80, 25);
 					player.setName("player");
 					add(player);
-					name = new JLabel();
-					name.setText("1");
-					name.setName("player");
+					//name = new JLabel();
+					name.setText(name.getText());
+					name.setName(name.getName());
 					name.setBounds(1060, 20, 20, 25);
 					add(name);
-					color = new JLabel("");
+					//color = new JLabel("");
 					color.setBounds(1110, 20, 25, 25);
-					color.setBackground(playerSet.get("1").getColor());
+					color.setBackground(playerSet.get(name.getText()).getColor());
 					color.setOpaque(true);
 					add(color);
 
@@ -326,8 +377,8 @@ public class PlayView extends JFrame implements Observer  {
 					add(strategy);
 					strategy.setBounds(1000, 70, 80, 25);
 
-					mode = new JLabel();
-					mode.setText(playerSet.get("1").getMode());
+					//mode = new JLabel();
+					mode.setText(playerSet.get(name.getText()).getMode());
 					add(mode);
 					mode.setBounds(1070, 70, 80, 25);
 
@@ -336,11 +387,12 @@ public class PlayView extends JFrame implements Observer  {
 					army.setText("Army: ");
 					army.setBounds(1000, 120, 80, 25);
 					add(army);
-					String n = String.valueOf(playerSet.get("1").getArmy());
-					armies = new JLabel(n);
+					String n = String.valueOf(playerSet.get(name.getText()).getArmy());
+					//armies = new JLabel(n);
 					armies.setName("armies");
 					armies.setBounds(1100, 120, 80, 25);
 					add(armies);
+
 
 					JOptionPane.showConfirmDialog(frame,"Load Successfully", "RiskGame",JOptionPane.DEFAULT_OPTION);
 				}
@@ -348,6 +400,9 @@ public class PlayView extends JFrame implements Observer  {
 				JOptionPane.showConfirmDialog(frame, e.toString() + "\nLoad Failed", "RiskGame", JOptionPane.DEFAULT_OPTION);
 			}
 		}
+
+
+
 
 		/**
 		 * This method is constructor of PlayPane.
@@ -575,14 +630,21 @@ public class PlayView extends JFrame implements Observer  {
 
 				//当没有之后，全部跳转到1,更新国家的label
 
-				if(!mode.getText().equalsIgnoreCase("human")) {
+				if(!mode.getText().equalsIgnoreCase("human")&&
+						!mode.getText().equalsIgnoreCase("cheater")) {
 					String reinforceINf=observable.Reinforcement("1");
 					String[] inf=reinforceINf.split(" ");
 					String one="Add "+inf[1]+" armies to "+inf[0]+" countries";
 					showInformation(one,"Reinforcement 1");
 					armies.setText("0");
 					noHuman();
-				} else{
+				}else if(mode.getText().equalsIgnoreCase("cheater")){
+					observable.Reinforcement("1");
+					showInformation("Cheater: auto double armies to every country!","Reinforcement 1");
+					armies.setText("0");
+					noHuman();
+				}
+				else{
 					observable.Reinforcement("1");
 					JOptionPane.showMessageDialog(null,
 							"enter reinforcement phase in human");
@@ -655,7 +717,6 @@ public class PlayView extends JFrame implements Observer  {
 						armies.setText(String.valueOf(playerSet.get(nextP).getArmy()));
 						phase.setText(state);
 						currentPhase = state;
-						updateLabelsCountry();
 						if(!playerSet.get(nextP).getMode().equalsIgnoreCase("human")){
 							noHuman();
 						}else {
@@ -663,7 +724,6 @@ public class PlayView extends JFrame implements Observer  {
 							return;
 						}
 					}
-
 				}
 
 
@@ -730,6 +790,7 @@ public class PlayView extends JFrame implements Observer  {
 		 */
 		public void noHuman() {
 
+			updateLabelsCountry();
 			isGetWin();
 
 			int flag = -100;
@@ -759,6 +820,7 @@ public class PlayView extends JFrame implements Observer  {
 				}
 
 				updateLabelsCountry();
+				//deleteBorder();
 				System.out.println();
 				System.out.println();
 				updateLabelsCountry();
@@ -772,10 +834,9 @@ public class PlayView extends JFrame implements Observer  {
 				String countrys = "Add One Army to " + cd;
 				showInformation(countrys, s);
 
-				deleteBorder();
 				stateChangeStartUp("start up");
 				System.out.println(" ******** End of start up in noHuman **********");
-
+				deleteBorder();
 				return;
 
 			}
@@ -812,7 +873,6 @@ public class PlayView extends JFrame implements Observer  {
 				ans = observable.attackPhase(name.getText(), "0",
 						"All_out", 0, 0, mode.getText());
 				//observable.Fortification("0","0",0);
-				updateLabelsCountry();
 				if(!mode.getText().equalsIgnoreCase("benevolent")) {
 					showInformation("Player" + name.getText() + " is attacking ", "Attack " + name.getText());
 				}
@@ -842,16 +902,19 @@ public class PlayView extends JFrame implements Observer  {
 							showInformation("Player"+name.getText() + " not conquers! ", "Attack "+name.getText());
 						}
 					}
+					updateLabelsCountry();
 				}
 				if(mode.getText().equalsIgnoreCase("cheater")){
-					updateLabelsCountry();
+					for(int i=0;i<ans.size();i++){
+						updateCountriesColorFix(labelsCountry.get(i),name.getText());
+					}
 					showInformation("Cheater: auto conquer neighbor countries!", "Attack "+name.getText());
 				}
 
 
 
 				attackNoHuman();
-				updateLabelsCountry();
+				//updateLabelsCountry();
 				isGetWin();
 				System.out.println(" ******** End of attack in noHuman **********");
 
@@ -861,6 +924,7 @@ public class PlayView extends JFrame implements Observer  {
 			if (currentPhase.equalsIgnoreCase("fortificaiton")) {
 
 
+				updateLabelsCountry();
 				isGetWin();
 
 
@@ -883,6 +947,31 @@ public class PlayView extends JFrame implements Observer  {
 			}
 		}
 
+
+		/**
+		 * This is the method to buffer image.
+		 * @param img buffer image.
+		 */
+
+		public BufferedImage toBufferedImage(Image img)
+		{
+			if (img instanceof BufferedImage)
+			{
+				return (BufferedImage) img;
+			}
+
+			// Create a buffered image with transparency
+			BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+			// Draw the image on to the buffered image
+			Graphics2D bGr = bimage.createGraphics();
+			bGr.drawImage(img, 0, 0, null);
+			bGr.dispose();
+
+			// Return the buffered image
+			return bimage;
+		}
+
 		/**
 		 * This is the method to show the final winner.
 		 */
@@ -892,14 +981,40 @@ public class PlayView extends JFrame implements Observer  {
 				for (String key : playerSet.keySet()) {
 					winner = key;
 				}
+				updateLabelsCountry();
 				//showInformation("Congradulation!!! Winner: ",winner);
-				JOptionPane.showMessageDialog(null,
-						"Congradulation!!!!player " + winner + " is winnner!!!");
+				//JOptionPane.showMessageDialog(null,
+				//		"Congradulation!!!!player " + winner + " is winnner!!!");
+				showInformation("Winner is "+winner,"Game Over");
 				frame.dispose();
 
 				new StartGame();
 				exit(0);
 
+			}
+		}
+
+
+		public void updateCountriesColorFix(JLabel label,String player){
+			ImageIcon imageIcon = (ImageIcon) label.getIcon();
+			Image image = imageIcon.getImage();
+
+			BufferedImage img = (BufferedImage) image;
+			int width = img.getWidth();
+			int height = img.getHeight();
+
+			WritableRaster raster = img.getRaster();
+//
+
+
+			for (int xx = 0; xx < width; xx++) {
+				for (int yy = 0; yy < height; yy++) {
+					int[] pixels = raster.getPixel(xx, yy, (int[]) null);
+					pixels[0] = playerSet.get(player).getColor().getRed();
+					pixels[1] = playerSet.get(player).getColor().getGreen();
+					pixels[2] = playerSet.get(player).getColor().getBlue();
+					raster.setPixel(xx, yy, pixels);
+				}
 			}
 		}
 
@@ -931,9 +1046,19 @@ public class PlayView extends JFrame implements Observer  {
 				if(observable.canFortification(name.getText())) {
 					observable.Fortification(name.getText(), "0", 0,
 							playerSet.get(String.valueOf(name.getText())).getMode());
+					updateLabelsCountry();
+					if(mode.getText().equalsIgnoreCase("cheater")){
+						observable.substractCheaterFortification(name.getText());
+						updateLabelsCountry();
+				}
+// else if(mode.getText().equalsIgnoreCase("aggressive") ||
+//							mode.getText().equalsIgnoreCase("random")){
+//						observable.substractNoCheaterFortification(name.getText());
+//						updateLabelsCountry();
+//					}
 
 					showInformation("Player"+name.getText()+" Fortificaiton ","Fortificaiton "+name.getText());
-					updateLabelsCountry();
+
 					fortificationNoHuman();
 					noHuman();
 				}else{
@@ -1017,13 +1142,23 @@ public class PlayView extends JFrame implements Observer  {
 				currentPhase = "Fortification";
 				observable.Fortification(name.getText(),"0",0,
 						playerSet.get(String.valueOf(name.getText())).getMode());
-				if(!mode.getText().equalsIgnoreCase("cheater")) {
+				updateLabelsCountry();
+				if(!mode.getText().equalsIgnoreCase("cheater") ) {
+
 					showInformation("Player"+name.getText() + " Fortificaiton ", "Fortificaiton "+name.getText());
-				}else{
+//					if(mode.getText().equalsIgnoreCase("aggressive") ||
+//							mode.getText().equalsIgnoreCase("random")){
+//						observable.substractNoCheaterFortification(name.getText());
+//						updateLabelsCountry();
+//					}
+				}
+				else{
+					observable.substractCheaterFortification(name.getText());
+					updateLabelsCountry();
 					showInformation("Player"+name.getText() + "Cheater: double armies in front country ", "Fortificaiton "+name.getText());
 
 				}
-				updateLabelsCountry();
+
 				if (WIN) {
 
 					String s=observable.earnCard(name.getText(),mode.getText());
@@ -1149,7 +1284,7 @@ public class PlayView extends JFrame implements Observer  {
 			ImageIcon imageIcon = (ImageIcon) label.getIcon();
 			Image image = imageIcon.getImage();
 
-			BufferedImage img = (BufferedImage) image;
+			BufferedImage img = toBufferedImage(image);
 			int width = img.getWidth();
 			int height = img.getHeight();
 

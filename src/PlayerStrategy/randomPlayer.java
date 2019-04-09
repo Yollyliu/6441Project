@@ -78,16 +78,18 @@ public class randomPlayer implements Strategy,Serializable{
         Random random = new Random();
         while(flag) {
             randomAttacker = randomAttacker();
-            String[] neighbours = countries.get(randomAttacker).getCountryList().split(" ");
-            LinkedList<String> enemies = new LinkedList<>();
-            for (String n : neighbours) {
-                if (!countries.get(n).getColor().equals(player.getColor()) && countries.get(n).getArmy() >= 1)
-                    enemies.add(n);
-            }
-            if (enemies.size() != 0) {
-                int index = random.nextInt(enemies.size());
-                randomDefender = enemies.get(index);
-                flag = false;
+            if(!randomAttacker.equalsIgnoreCase("")) {
+                String[] neighbours = countries.get(randomAttacker).getCountryList().split(" ");
+                LinkedList <String> enemies = new LinkedList <>();
+                for (String n : neighbours) {
+                    if (!countries.get(n).getColor().equals(player.getColor()) && countries.get(n).getArmy() >= 1)
+                        enemies.add(n);
+                }
+                if (enemies.size() != 0) {
+                    int index = random.nextInt(enemies.size());
+                    randomDefender = enemies.get(index);
+                    flag = false;
+                }
             }
         }
         System.out.println("random attacker is:" + randomAttacker);
@@ -146,29 +148,43 @@ public class randomPlayer implements Strategy,Serializable{
         String s="";
         Random random = new Random();
         String two = randomAttacker();
-        int trasfer = random.nextInt(countries.get(two).getArmy() - 1) + 1;
-        int index = random.nextInt(player.getCountryList().size());
-        String one = String.valueOf(player.getCountryList().get(index).getName());
-        if(!one.equals(two) && player.canTransfer(Integer.parseInt(one),Integer.parseInt(two),countries)){
-            s = s + one + " " + two;
-            System.out.println("transfer army:" + trasfer + "from country " + two + " to country " + one);
-            int oneArmy = countries.get(one).getArmy();
-            countries.get(one).setArmy(oneArmy + trasfer);
-            System.out.println("After transfer country " + one + " has armies:" + countries.get(one).getArmy());
-            int twoArmy = countries.get(two).getArmy();
-            countries.get(two).setArmy(twoArmy - trasfer);
-            System.out.println("After transfer country " + two + " has armies:" + countries.get(two).getArmy());
-            for (Country c:player.getCountryList()) {
-                if(c.getName() == Integer.parseInt(one)){
-                    c.setArmy(oneArmy + trasfer);
-                }if(c.getName() == Integer.parseInt(two)){
-                    c.setArmy(twoArmy - trasfer);
+        System.out.println("the two country in fortificaiton is "+two);
+        if(!two.equalsIgnoreCase("")) {
+            int trasfer = random.nextInt(countries.get(two).getArmy() - 1) + 1;
+            int index = random.nextInt(player.getCountryList().size());
+            String one = String.valueOf(player.getCountryList().get(index).getName());
+            if (!one.equals(two) && player.canTransfer(Integer.parseInt(one), Integer.parseInt(two), countries)) {
+                s = s + one + " " + two;
+                System.out.println("transfer army:" + trasfer + "from country " + two + " to country " + one);
+                int oneArmy = countries.get(one).getArmy();
+                countries.get(one).setArmy(oneArmy + trasfer);
+                System.out.println("After transfer country " + one + " has armies:" + countries.get(one).getArmy());
+                int twoArmy = countries.get(two).getArmy();
+                countries.get(two).setArmy(twoArmy - trasfer);
+                System.out.println("After transfer country " + two + " has armies:" + countries.get(two).getArmy());
+                for (Country c : player.getCountryList()) {
+                    if (c.getName() == Integer.parseInt(one)) {
+                        c.setArmy(oneArmy + trasfer);
+                    }
+                    if (c.getName() == Integer.parseInt(two)) {
+                        c.setArmy(twoArmy - trasfer);
+                    }
                 }
-            }
 
+            } else {
+                System.out.println("random selected countries can not fortification");
+            }
         }else{
             System.out.println("random selected countries can not fortification");
         }
+
+
+//        for (Country c:player.getCountryList()) {
+//
+//            int armyNow = c.getArmy();
+//            c.setArmy(armyNow+1);
+//            countries.get(String.valueOf(c.getName())).setArmy(armyNow+1);
+//        }
 
 
         return s;
@@ -183,14 +199,19 @@ public class randomPlayer implements Strategy,Serializable{
     public String randomSelect(LinkedList<Country> countryList){
 
         System.out.println(" In random select: the player is "+player.getPlayerName());
+        System.out.println("The countrylist size is "+countryList.size());
         Random randomC = new Random();
 
-        int index = randomC.nextInt(countryList.size());
-        int find=countryList.get(index).getName();
-        String findc=String.valueOf(find);
+        if(countryList.size()>0) {
+            int index = randomC.nextInt(countryList.size());
+            int find = countryList.get(index).getName();
+            String findc = String.valueOf(find);
 
-        System.out.println(" the random selected country is "+ findc);
-        return findc;
+            System.out.println(" the random selected country is " + findc);
+            return findc;
+        }else{
+            return "";
+        }
 
     }
 
@@ -206,8 +227,12 @@ public class randomPlayer implements Strategy,Serializable{
             if(c.getArmy() >= 2)
                 attackers.add(c);
         }
-        String randomAttacker = randomSelect(attackers);
-        return randomAttacker;
+        if(attackers.size()>0) {
+            String randomAttacker = randomSelect(attackers);
+            return randomAttacker;
+        }else{
+            return "";
+        }
     }
 
     /**
