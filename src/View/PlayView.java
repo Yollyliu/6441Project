@@ -124,6 +124,10 @@ public class PlayView extends JFrame implements Observer  {
 
 	}
 
+	/**
+	 * It is load action listener
+	 */
+
 	private class LoadAction implements ActionListener, Serializable{
 		PlayPane playPane;
 
@@ -147,6 +151,10 @@ public class PlayView extends JFrame implements Observer  {
 			}
 		}
 	}
+
+	/**
+	 * It is save action listener
+	 */
 
 	private class SaveAction implements ActionListener, Serializable {
 		PlayPane playPane;
@@ -182,6 +190,11 @@ public class PlayView extends JFrame implements Observer  {
 
 		iconHandler ih = new iconHandler();
 
+		/**
+		 * This method is to save components into file.
+		 *
+		 * @param file The file to save
+		 */
 		public void saveGame(File file){
 			try{
 				FileOutputStream fileOutputStream= new FileOutputStream(file);
@@ -208,6 +221,11 @@ public class PlayView extends JFrame implements Observer  {
 			}
 		}
 
+		/**
+		 * This method is to load components from file.
+		 *
+		 * @param file The file to read
+		 */
 		public void loadGame(File file){
 			try{
 				HashMap<String, Line> saveLineMap = new HashMap<>();
@@ -442,6 +460,12 @@ public class PlayView extends JFrame implements Observer  {
 
 		}
 
+		/**
+		 * This method is to paint country
+		 *
+		 * @param countries A hash map stores all countries.
+		 */
+
 		public void paintCountry(HashMap<String, Country> countries){
 
 			File image = new File("resource/tower.png");
@@ -496,8 +520,11 @@ public class PlayView extends JFrame implements Observer  {
 			}
 		}
 
-
-
+		/**
+		 * This method is to change states fot different kinds of players.
+		 *
+		 * @param state a state to store one of phases (reinforcement, attack, fortification).
+		 */
 		public void stateChangeStartUp(String state){
 
 			System.out.println("************** Begin of stateChangeStartUp ****************");
@@ -614,6 +641,11 @@ public class PlayView extends JFrame implements Observer  {
 
 		}
 
+		/**
+		 * This method is to get next state.
+		 *
+		 * @return The name of next state.
+		 */
 		public String getNextState(){
 			String state="";
 			switch (currentPhase) {
@@ -636,6 +668,12 @@ public class PlayView extends JFrame implements Observer  {
 
 		}
 
+		/**
+		 * THis method is to automatically show the information of playing ever 3 seconds.
+		 *
+		 * @param information A String to store the information.
+		 * @param name A string to store the name of the player.
+		 */
 		public void showInformation(String information,String name){
 			JOptionPane op = new JOptionPane(information, JOptionPane.INFORMATION_MESSAGE);
 			JDialog dialog = op.createDialog(information);
@@ -655,7 +693,9 @@ public class PlayView extends JFrame implements Observer  {
 			dialog.setVisible(true);
 		}
 
-
+		/**
+		 * This is a method for three phases of no human players.
+		 */
 		public void noHuman() {
 
 			isGetWin();
@@ -799,13 +839,18 @@ public class PlayView extends JFrame implements Observer  {
 		}
 
 
-
+		/**
+		 * This is the mathod to delete the border of the country.
+		 */
 		public void deleteBorder() {
 			for (int i = 0; i < labelsCountry.size(); i++) {
 				labelsCountry.get(i).setBorder(null);
 			}
 		}
 
+		/**
+		 * This is the method to show the final winner.
+		 */
 		public void isGetWin(){
 			if (Attack.isWIN()) {
 				String winner = "";
@@ -867,6 +912,9 @@ public class PlayView extends JFrame implements Observer  {
 
 		}
 
+		/**
+		 * This is the method to update the countries' labels.
+		 */
 		public void updateLabelsCountry(){
 
 
@@ -896,7 +944,9 @@ public class PlayView extends JFrame implements Observer  {
 
 		}
 
-
+		/**
+		 * This is the method for no human attacking.
+		 */
 		public void attackNoHuman() {
 			System.out.println("******* Begin of attackNoHuman **********");
 			updateLabelsCountry();
@@ -943,7 +993,9 @@ public class PlayView extends JFrame implements Observer  {
 
 		}
 
-
+		/**
+		 * This is the method for no human fortification.
+		 */
 		public void fortificationNoHuman() {
 
 			System.out.println("***************** begin of fortificationNoHuman**************  ");
@@ -1322,7 +1374,12 @@ public class PlayView extends JFrame implements Observer  {
 
 			}
 
-
+			/**
+			 * This is the method to determine different strategies players can enter their particular reinforcement.
+			 *
+			 * @param nextP the name of next player.
+			 * @param previous the previous phase.
+			 */
 			public void enterReinforcement(String nextP,String previous) {
 
 					// get into reinforcement phase

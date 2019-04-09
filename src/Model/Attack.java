@@ -254,6 +254,7 @@ public class Attack implements Serializable {
 	 * This method implements according different mode invoking different attack
 	 * function.
 	 *
+	 * @param behavior player behavior.
 	 * @return A result of attack.
 	 */
 	public String attacking(String behavior) {

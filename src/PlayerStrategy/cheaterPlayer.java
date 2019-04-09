@@ -7,9 +7,18 @@ import Model.Player;
 
 import java.util.*;
 
+/**
+ * <h1>cheaterPlayer</h1>
+ * The cheaterPlayer class is for implement all interface method for the cheater player.
+ *
+ * @author tianshu_ji, shuo_chi, youlin_liu
+ * @version 3.0
+ * @since 2019-04-07
+ */
 //computer player strategy whose reinforce() method doubles the number of armies on all its countries,
 // whose attack() method automatically conquers all the neighbors of all its countries,
 //and whose fortify() method doubles the number of armies on its countries that have neighbors that belong to other players.
+
 public class cheaterPlayer implements Strategy{
     String behavior="";
     Player player;
