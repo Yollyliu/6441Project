@@ -10,14 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * <h1>benevolentPlayer</h1>
- * The benevolentPlayer class is for implement all interface method for the benevolent player.
- *
- * @author tianshu_ji, shou_chi, youlin_liu
- * @version 3.0
- * @since 2019-04-07
- */
 public class benevolentPlayer implements Strategy, Serializable {
 
     String behavior="";
@@ -138,12 +130,6 @@ public class benevolentPlayer implements Strategy, Serializable {
 
     }
 
-    /**
-     * This method is find the weak country.
-     *
-     * @param player the object of the player.
-     * @return the armies' number of the weakest country.
-     */
     public int weekCon(Player player){
         System.out.println("This is weekCon function");
         LinkedList<Country> c = player.getCountryList();

@@ -9,14 +9,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Vector;
 
-/**
- * <h1>TourResult</h1>
- * Show the tournament result in a panel.
- *
- * @author tianshu_ji
- * @version 3.0
- * @since 2019-04-07
- */
 public class TourResult extends JFrame{
 
     JFrame jFrame = new JFrame("Result");
@@ -97,9 +89,6 @@ public class TourResult extends JFrame{
         jFrame.setVisible(true);
     }
 
-    /**
-     * This is a pane class to add components
-     */
     public class TourResultPane extends JLayeredPane{
         public TourResultPane(String M, String P, int G, int D) {
 
@@ -146,12 +135,6 @@ public class TourResult extends JFrame{
         }
     }
 
-    /**
-     * This is a method to create the data in the table.
-     *
-     * @param cellData the data obejct in each row.
-     * @param columTitle the title in each colum.
-     */
     public void dataBase(Object[][] cellData, Object[] columTitle){
 
         LinkedList<String> resultStrings = tournament.getResultInformation();

@@ -42,7 +42,6 @@ public class Player implements Serializable {
 	 * This is a constructor and initializes player attribute.
 	 *
 	 * @param playerName player name.
-	 * @param behavoir player behavoir.
 	 */
 	public Player(String playerName,String behavoir) {
 		this.playerName = playerName;
@@ -53,56 +52,26 @@ public class Player implements Serializable {
 		this.strategy= strategyFactory.getBehavior(behavoir,this);
 	}
 
-	/**
-	 * This method is to get attack object.
-	 *
-	 * @return attack object.
-	 */
 	public Attack getAttack() {
 		return attack;
 	}
 
-	/**
-	 * This method is to set attack object.
-	 *
-	 * @param attack an attack object.
-	 */
 	public void setAttack(Attack attack) {
 		this.attack = attack;
 	}
 
-	/**
-	 * This method is to get strategy object.
-	 *
-	 * @return strategy object.
-	 */
 	public Strategy getStrategy() {
 		return strategy;
 	}
 
-	/**
-	 * This method is to set strategy object.
-	 *
-	 * @param strategy a strategy to set.
-	 */
 	public void setStrategy(Strategy strategy) {
 		this.strategy = strategy;
 	}
 
-	/**
-	 * This method is to get a mode.
-	 *
-	 * @return a mode.
-	 */
 	public String getMode() {
 		return mode;
 	}
 
-	/**
-	 * This method is to set a mode.
-	 *
-	 * @param mode a mode to set.
-	 */
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
@@ -219,14 +188,6 @@ public class Player implements Serializable {
 
 	//////////////////////// Reinforcement /////////////////////////////////////
 
-	/**
-	 * This method is to reinforce in different strategies.
-	 *
-	 * @param playerSet A hash map store all players.
-	 * @param countries A hash map store all countries.
-	 * @param continents A hash map store all continents.
-	 * @return the result of reinforcement.
-	 */
 	public String reinforcement(HashMap<String, Player> playerSet,
 			HashMap<String, Country> countries,
 								HashMap<String, Continent> continents) {
@@ -235,10 +196,7 @@ public class Player implements Serializable {
 		return c;
 	}
 
-	/**
-	 * This method is to get all armies of
-	 * @param continents a hash map stores all the continents.
-	 */
+
 	public void getAllArmies(HashMap<String, Continent> continents) {
 
 		// update armies number for each player
@@ -265,14 +223,6 @@ public class Player implements Serializable {
 		}
 	}
 
-	/**
-	 * This method is to update data of army in reinforcement phase.
-	 *
-	 * @param country the country's army need to be changed.
-	 * @param army the army to replace the precious.
-	 * @param playerSet a hash map store all the players.
-	 * @param countries a hash map store all the countries.
-	 */
 	public void updateReinforcement(int country, int army,
 						   HashMap<String, Player> playerSet,
 						   HashMap<String, Country> countries) {
@@ -302,7 +252,6 @@ public class Player implements Serializable {
 	 * This method judges a play whether occupies a continent or not. If yes, then
 	 * player get control value, otherwise.
 	 *
-	 * @param continents A HashMap contains all the continents.
 	 * @return Control value.
 	 */
 	public int ContinentArmy(HashMap<String, Continent> continents) {     //暂时想不出来怎么改
@@ -332,19 +281,7 @@ public class Player implements Serializable {
 
 	/////////////////// Attack //////////////////////////////////////
 
-	/**
-	 * This method is for general attack.
-	 *
-	 * @param attacker the name of attacker.
-	 * @param defender the name of defender.
-	 * @param mode	the strategy tyoe.
-	 * @param attDices the number dices of attacker choosing.
-	 * @param defDices the number dices of defender choosing.
-	 * @param playerSet a hash map stores all players.
-	 * @param countries a hash map stores all countries.
-	 * @param continents a hash map stores all continents.
-	 * @return the result of attacking.
-	 */
+
 	public LinkedList<String> attack(String attacker, String defender, String mode,
 					   int attDices, int defDices,
 					   HashMap<String, Player> playerSet,
@@ -358,18 +295,6 @@ public class Player implements Serializable {
 		return ans;
 	}
 
-	/**
-	 * This method is to know the attack result.
-	 * @param attacker the name of attacker.
-	 * @param defender the name of defender.
-	 * @param mode	the strategy tyoe.
-	 * @param attDices the number dices of attacker choosing.
-	 * @param defDices the number dices of defender choosing.
-	 * @param playerSet a hash map stores all players.
-	 * @param countries a hash map stores all countries.
-	 * @param continents a hash map stores all continents.
-	 * @return the result of attacking.
-	 */
 	public String attackPhase(String attacker, String defender, String mode,
 							  int attDices, int defDices,
 							  HashMap<String, Player> playerSet,
@@ -392,16 +317,6 @@ public class Player implements Serializable {
 	}
 
 	////////////////////////  Fortification /////////////////////////
-
-	/**
-	 * This is the method for fortification.
-	 *
-	 * @param from the country moving out armies.
-	 * @param to the country moving in armies.
-	 * @param move the number of armies to move.
-	 * @param countries a hash map stores all the countries.
-	 * @return the result of fortification.
-	 */
 	public String fortification(Country from, Country to, int move,
 							  HashMap<String, Country> countries){
 		String s=this.strategy.Fortification(from,  to, move,countries);
@@ -409,14 +324,6 @@ public class Player implements Serializable {
 
 	}
 
-	/**
-	 * This method is to judge the transfer is legal or illegal.
-	 *
-	 * @param start the country moving out armies.
-	 * @param end the country moving in armies.
-	 * @param countries a hash map stores all countries.
-	 * @return legal or illegal.
-	 */
 	public boolean canTransfer(int start, int end,
 							   HashMap<String, Country> countries) {
 		int maxCountry = returnMax(countries);
@@ -506,12 +413,6 @@ public class Player implements Serializable {
 		return match;
 	}
 
-	/**
-	 * Thi is the method to get the max name of all countries.
-	 *
-	 * @param countries a hash map stores all countries.
-	 * @return the max name of all countries + 1.
-	 */
 	private int returnMax(HashMap<String, Country> countries) {
 		int max = 0;
 		for (String m : countries.keySet()) {
@@ -560,6 +461,7 @@ public class Player implements Serializable {
 
 	}
 
+
 	public void agrressiveStartUp(HashMap<String, Country> countries){
 		System.out.println("we are in aggressive");
 		HashMap<Integer,Integer> frontNum=new HashMap <>();
@@ -578,12 +480,6 @@ public class Player implements Serializable {
 		this.setArmy(0);
 	}
 
-	/**
-	 * This method is to get the frontier countries list.
-	 *
-	 * @param countries a hash map stores all countries.
-	 * @return a frontier countries list.
-	 */
 	public HashMap<Integer,Integer> Front(
 			HashMap<String, Country> countries){
 
@@ -604,14 +500,6 @@ public class Player implements Serializable {
 
 	}
 
-	/**
-	 * This method is to transfer armies after attacking.
-	 *
-	 * @param record a record to stored the result of attacking.
-	 * @param att the attacking country.
-	 * @param def the defending country.
-	 * @param countries	a hash map stores all countries.
-	 */
 	public void transfer(String record, Country att, Country def,
 						 HashMap<String, Country> countries) {
 
