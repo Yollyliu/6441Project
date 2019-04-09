@@ -633,10 +633,12 @@ public class Player implements Serializable {
 
 			if (getCountryList().get(k).getName() == def.getName()) {
 				def.setArmy(afterdef);
+				def.setColor(color);
 				System.out.println("After transfer: def: "+ def.getName()+"  Army: "+def.getArmy());
 			}
 			if (getCountryList().get(k).getName() == att.getName()) {
 				att.setArmy(aftatt);
+				att.setColor(color);
 				System.out.println("After transfer: att: "+ att.getName()+"  Army: "+att.getArmy());
 
 			}
@@ -644,11 +646,13 @@ public class Player implements Serializable {
 		for(String key:countries.keySet()) {
 			if (Integer.valueOf(key)==att.getName()) {
 				countries.get(key).setArmy(aftatt);
+				countries.get(key).setColor(color);
 				System.out.println("After transfer: att: "+ countries.get(key).getName()+"  Army: "+countries.get(key).getArmy());
 
 			}
 			if (Integer.valueOf(key)==def.getName()) {
 				countries.get(key).setArmy(afterdef);
+				countries.get(key).setColor(att.getColor());
 				System.out.println("After transfer: def: "+ countries.get(key).getName()+"  Army: "+countries.get(key).getArmy());
 
 			}

@@ -3,6 +3,7 @@ package Model;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
@@ -19,7 +20,7 @@ import View.CardView;
  * @version 3.0
  * @since 2019-03-01 13:08
  */
-public class InitializePhase extends Observable {
+public class InitializePhase extends Observable implements Serializable {
 	private int playerNum;
 	private HashMap<String, Player> playerSet;
 	private HashMap<String, Country> countries;
@@ -442,6 +443,8 @@ public class InitializePhase extends Observable {
 
 		if(ans.size()>0){
 		//if (result != "") {
+			setChanged();
+			notifyObservers(this);
 
 			return ans;
 
@@ -449,8 +452,7 @@ public class InitializePhase extends Observable {
 			System.out.println("Attack Failure!!!");
 		}
 
-		setChanged();
-		notifyObservers(this);
+
 		return ans;
 
 	}
@@ -933,7 +935,7 @@ public class InitializePhase extends Observable {
  * @version 3.0
  * @since 2019-03-01
  */
-class ColorList {
+class ColorList implements Serializable{
 
 	private LinkedList<Color> colors = new LinkedList<>();
 

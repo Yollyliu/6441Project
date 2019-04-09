@@ -4,6 +4,7 @@ import Model.Continent;
 import Model.Country;
 import Model.Player;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,7 +21,7 @@ import java.util.Random;
 //A random computer player strategy that reinforces random a random country,
 //attacks a random number of times a random country, and fortifies a random
 //country, all following the standard rules for each phase.
-public class randomPlayer implements Strategy{
+public class randomPlayer implements Strategy,Serializable{
 
     String behavior="";
     Player player;

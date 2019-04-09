@@ -107,8 +107,12 @@ public class benevolentPlayer implements Strategy, Serializable {
                             }
                             int oneNew = countries.get(String.valueOf(one.getName())).getArmy() + move;
                             countries.get(String.valueOf(one.getName())).setArmy(oneNew);
-                            int twoNew = countries.get(String.valueOf(one.getName())).getArmy() - move;
-                            countries.get(String.valueOf(one.getName())).setArmy(twoNew);
+                            System.out.println("After fortification " + String.valueOf(one.getName()) + " has armies " +
+                                    countries.get(String.valueOf(one.getName())).getArmy());
+                            int twoNew = countries.get(String.valueOf(two.getName())).getArmy() - move;
+                            countries.get(String.valueOf(two.getName())).setArmy(twoNew);
+                            System.out.println("After fortification " + String.valueOf(two.getName()) + " has armies " +
+                                    countries.get(String.valueOf(two.getName())).getArmy());
                             for (Country c:player.getCountryList()) {
                                 if(c.getName() == one.getName())
                                     c.setArmy(oneNew);

@@ -85,9 +85,27 @@ public class humanPlayer implements Strategy, Serializable {
                                      HashMap<String, Continent> continents) {
         LinkedList<String> ans=new LinkedList <>();
         System.out.println(" hello, we are in human player attack");
-        String result=player.attackPhase(attacker, defender, mode,
+        String cur=player.attackPhase(attacker, defender, mode,
                 attDices, defDices,playerSet,countries,continents);
-        ans.add(result);
+        System.out.println("The Human Attack information is: ");
+        System.out.println(cur);
+        String[] readrecord = cur.split(" ");
+        if(readrecord[0].equals(attacker)) {
+            System.out.println("attacker Country " + attacker + " win");
+            Country att=countries.get(attacker);
+            Country def=countries.get(defender);
+            if(Integer.valueOf(readrecord[1])!= 0 ) {
+                player.transfer(cur, att, def, countries);
+            }
+        }
+        else if (readrecord[0].equals("-1")) {
+            System.out.println("This is a draw. No need to transfer");
+        }
+        else {
+            System.out.println("defender Country " + defender + " win");
+        }
+
+        ans.add(cur);
         return ans;
     }
 

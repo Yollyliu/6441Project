@@ -5,6 +5,7 @@ import Model.Continent;
 import Model.Country;
 import Model.Player;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -19,7 +20,7 @@ import java.util.*;
 // whose attack() method automatically conquers all the neighbors of all its countries,
 //and whose fortify() method doubles the number of armies on its countries that have neighbors that belong to other players.
 
-public class cheaterPlayer implements Strategy{
+public class cheaterPlayer implements Strategy,Serializable {
     String behavior="";
     Player player;
 

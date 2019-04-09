@@ -209,6 +209,8 @@ public class PlayView extends JFrame implements Observer  {
 				objectOutputStream.writeObject(phase);
 				objectOutputStream.writeObject(labelsCountry);
 				objectOutputStream.writeObject(b);
+				objectOutputStream.writeObject(dominationView);
+				objectOutputStream.writeObject(mode);
 
 				objectOutputStream.close();
 				fileOutputStream.close();
@@ -237,6 +239,9 @@ public class PlayView extends JFrame implements Observer  {
 				JButton savePhase;
 				LinkedList<JLabel> saveLabelsCountry;
 				BackEnd saveB;
+				DominationView saveDominationView;
+				JLabel saveMode;
+
 
 
 				FileInputStream fileInputStream = new FileInputStream(file);
@@ -253,6 +258,8 @@ public class PlayView extends JFrame implements Observer  {
 				savePhase = (JButton) objectInputStream.readObject();
 				saveLabelsCountry = (LinkedList<JLabel>) objectInputStream.readObject();
 				saveB = (BackEnd) objectInputStream.readObject();
+				saveDominationView = (DominationView) objectInputStream.readObject();
+				saveMode = (JLabel) objectInputStream.readObject();
 
 				objectInputStream.close();
 				fileInputStream.close();
@@ -271,6 +278,8 @@ public class PlayView extends JFrame implements Observer  {
 					phase = savePhase;
 					labelsCountry = saveLabelsCountry;
 					b = saveB;
+					dominationView = saveDominationView;
+					mode = saveMode;
 
 					frame.setEnabled(true);
 //					for (JLabel country : labelsCountry) {
@@ -288,10 +297,10 @@ public class PlayView extends JFrame implements Observer  {
 
 					// create button country
 					//JButton phase1 = phase;
-					String phase1Name = phase.getName();
-					phase = new JButton(currentPhase + " phase");
-					//currentPhase = "start up";
-					phase.setName(phase1Name);
+					// create button country
+					phase = new JButton("start up phase");
+					currentPhase = "start up";
+					phase.setName("phase");
 					phase.setBackground(Color.green);
 					phase.setBounds(400, 600, 200, 50);
 					phase.addMouseListener(ih);
@@ -302,27 +311,35 @@ public class PlayView extends JFrame implements Observer  {
 					player.setBounds(1000, 20, 80, 25);
 					player.setName("player");
 					add(player);
-					String name1 = name.getText();
 					name = new JLabel();
-					name.setText(name1);
+					name.setText("1");
 					name.setName("player");
 					name.setBounds(1060, 20, 20, 25);
 					add(name);
 					color = new JLabel("");
 					color.setBounds(1110, 20, 25, 25);
-					color.setBackground(playerSet.get(name1).getColor());
+					color.setBackground(playerSet.get("1").getColor());
 					color.setOpaque(true);
 					add(color);
+
+					JLabel strategy = new JLabel("Strategy: ");
+					add(strategy);
+					strategy.setBounds(1000, 70, 80, 25);
+
+					mode = new JLabel();
+					mode.setText(playerSet.get("1").getMode());
+					add(mode);
+					mode.setBounds(1070, 70, 80, 25);
 
 					// receive armies number
 					JLabel army = new JLabel();
 					army.setText("Army: ");
-					army.setBounds(1000, 60, 80, 25);
+					army.setBounds(1000, 120, 80, 25);
 					add(army);
-					String n = String.valueOf(playerSet.get(name1).getArmy());
+					String n = String.valueOf(playerSet.get("1").getArmy());
 					armies = new JLabel(n);
 					armies.setName("armies");
-					armies.setBounds(1100, 70, 80, 25);
+					armies.setBounds(1100, 120, 80, 25);
 					add(armies);
 
 					JOptionPane.showConfirmDialog(frame,"Load Successfully", "RiskGame",JOptionPane.DEFAULT_OPTION);
@@ -811,6 +828,7 @@ public class PlayView extends JFrame implements Observer  {
 									WIN = true;
 									break;
 								}
+
 							}
 						}
 
@@ -998,7 +1016,7 @@ public class PlayView extends JFrame implements Observer  {
 				if(!mode.getText().equalsIgnoreCase("cheater")) {
 					showInformation("Player"+name.getText() + " Fortificaiton ", "Fortificaiton "+name.getText());
 				}else{
-					showInformation("Player"+name.getText() + "Cheater: double armies in every country ", "Fortificaiton "+name.getText());
+					showInformation("Player"+name.getText() + "Cheater: double armies in front country ", "Fortificaiton "+name.getText());
 
 				}
 				updateLabelsCountry();
@@ -1085,7 +1103,7 @@ public class PlayView extends JFrame implements Observer  {
 			}else if(playerSet.get(nextP).getMode().equalsIgnoreCase("cheater")){
 				String ans=observable.Reinforcement(nextP);
 
-					String infomation="Cheater: auto double armies in every country";
+					String infomation="Cheater: auto double armies in front country";
 					String s=currentPhase+" "+nextP;
 
 					showInformation(infomation,s);
@@ -1145,11 +1163,6 @@ public class PlayView extends JFrame implements Observer  {
 				}
 			}
 		}
-
-
-
-
-
 
 
 
@@ -1323,7 +1336,7 @@ public class PlayView extends JFrame implements Observer  {
 							from = c;
 							start = false;
 							from.setBorder(new LineBorder(Color.ORANGE));
-							System.out.println("you choose" + from.getText() + " as attack country");
+							System.out.println("you choose " + from.getText() + " as attack country");
 						} else {
 							if (start && !isOne) {
 								JOptionPane.showMessageDialog(null, "this country cannot attack others in human");
@@ -1584,6 +1597,7 @@ public class PlayView extends JFrame implements Observer  {
 			 */
 			public void attackerView(JLabel attak, JLabel defend) {
 
+				System.out.println("********* Begin of attackView **********");
 				// select mode
 				String mode = b.chooseMode();
 				String defender = b.findPlayer(defend.getName());
@@ -1601,19 +1615,22 @@ public class PlayView extends JFrame implements Observer  {
 					} else {
 
 						// one - time
-						String dicses = b.dicsnumber(name.getText(), atcoun[1], "at", "");
-						if (dicses != "") {
+						System.out.println(" enter attackView with mode == one_time ");
+						System.out.println();
+						String dicses = b.dicsnumber(name.getText(), atcoun[2], "at", "");
+						if (!dicses.equalsIgnoreCase("")) {
 
+							System.out.println();
 							// defender choose disc
-							String de = b.dicsnumber(defender, decoun[1], "de", dicses);
-							if (de != "") {
+							String de = b.dicsnumber(defender, decoun[2], "de", dicses);
+							if (!de.equalsIgnoreCase("")) {
 
 								// one_time
-								ans = observable.attackPhase(attak.getName(), defend.getName(),
-										mode, 0, 0, "Human");
-								String canTransfer = ans.getFirst();
-								//String canTransfer = observable.attackPhase(attak.getName(), defend.getName(), mode,
-								//		Integer.valueOf(dicses), Integer.valueOf(de),"Human");
+//								ans = observable.attackPhase(attak.getName(), defend.getName(),
+//										mode, 0, 0, "Human");
+								//String canTransfer = ans.getFirst();
+								String canTransfer = observable.attackPhase(attak.getName(), defend.getName(), mode,
+										Integer.valueOf(dicses), Integer.valueOf(de),"Human").getFirst();
 								Transfer(canTransfer, attak, defend);
 							}
 
@@ -1621,6 +1638,7 @@ public class PlayView extends JFrame implements Observer  {
 
 					}
 				}
+				System.out.println("********* End of attackView **********");
 
 			}
 

@@ -128,7 +128,7 @@ public class aggressivePlayer  implements Strategy, Serializable {
                                 0, 0, playerSet, countries, continents);
                         System.out.println();
                         System.out.println();
-                        System.out.println("the attack information is "+ cur);
+                        System.out.println("the Aggressive Attack information is "+ cur);
                         String[] readrecord = cur.split(" ");
                         if(readrecord[0].equals(attacker)) {
                             System.out.println("attacker Country " + aggressiveAttack + " win");
