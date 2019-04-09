@@ -274,7 +274,7 @@ public class InitializePhase extends Observable {
 
 	public String randomSelect(String key){
 
-		System.out.println(" the player is "+key);
+		System.out.println(" In random select Initialize: the player is "+key);
 				Random randomC = new Random();
 
 				int index = randomC.nextInt(playerSet.get(key).getCountryList().size());
@@ -297,11 +297,15 @@ public class InitializePhase extends Observable {
 	 */
 	public void Startup(String pname, String couname) {
 
+		if(playerSet.get(pname).getArmy()>0) {
 			int parmies = playerSet.get(pname).getArmy() - 1;
 			playerSet.get(pname).setArmy(parmies);
 
 			int carmies = countries.get(couname).getArmy() + 1;
 			countries.get(couname).setArmy(carmies);
+		}else{
+			System.out.println("no army anymore");
+		}
 
 		setChanged();
 		notifyObservers(this);
@@ -313,10 +317,17 @@ public class InitializePhase extends Observable {
 	 * 
 	 * @param player Player name.
 	 */
-	public void Reinforcement(String player) {
-		playerSet.get(player).reinforcement(playerSet,countries);
+	public String Reinforcement(String player) {
+		System.out.println("in initialize phase reinforcement");
+		String c=playerSet.get(player).reinforcement(playerSet,countries);
+		System.out.println("the lucky country is "+c);
+		System.out.println("done well in Reinforcement");
+		System.out.println();
+		System.out.println();
+
 		setChanged();
 		notifyObservers(this);
+		return c;
 	}
 
 	/**
@@ -369,38 +380,50 @@ public class InitializePhase extends Observable {
 	 * @param defDices The number of dices defender chooses.
 	 * @return The result of attack phase.
 	 */
-	public String attackPhase(String attacker, String defender, String mode,
-							  int attDices, int defDices) {
+	public LinkedList<String> attackPhase(String attacker, String defender, String mode,
+							  int attDices, int defDices,String strategy) {
 
 		System.out.println("we at attackPhase in initialize");
 		System.out.println("the attacker is :"+attacker);  //country
 		System.out.println("the defender is :"+defender);  //country
-		System.out.println("the playerset is :");
+		System.out.println();
+		System.out.println();
+		System.out.println();
 		String playerAttack="";
-		for(String players:playerSet.keySet()){
-			LinkedList<Country> countries=playerSet.get(players).getCountryList();
-			for(int i=0;
-				i<countries.size();i++){
-				if(countries.get(i).getName()==Integer.valueOf(attacker)){
-					playerAttack=players;
-					break;
+		String result="";
+		LinkedList<String> ans=new LinkedList <>();
+		if(strategy.equalsIgnoreCase("human")) {
+			for (String players : playerSet.keySet()) {
+				LinkedList <Country> countries = playerSet.get(players).getCountryList();
+				for (int i = 0; i < countries.size(); i++) {
+					if (countries.get(i).getName() == Integer.valueOf(attacker)) {
+						playerAttack = players;
+						break;
+					}
 				}
 			}
+
+			System.out.println("the playerAttack : " + playerAttack);
+
+			ans = playerSet.get(playerAttack).attack(attacker, defender, mode, attDices,
+					defDices, playerSet, countries, continents);
+		}else{
+			ans=playerSet.get(attacker).attack(attacker, defender, mode, attDices,
+					defDices, playerSet, countries, continents);
 		}
 
-		String result=playerSet.get(playerAttack).attack(attacker, defender, mode, attDices,
-				defDices, playerSet, countries, continents);
+		if(ans.size()>0){
+		//if (result != "") {
 
-		if (result != "") {
-			setChanged();
-			notifyObservers(this);
-			return result;
+			return ans;
 
 		} else {
 			System.out.println("Attack Failure!!!");
 		}
 
-		return "Failure";
+		setChanged();
+		notifyObservers(this);
+		return ans;
 
 	}
 //
@@ -444,26 +467,65 @@ public class InitializePhase extends Observable {
 	 * @param to   Target country.
 	 * @param move The number of armies to be moved.
 	 */
-	public void Fortification(String from, String to, int move) {
+	public void Fortification(String from, String to, int move,String mode) {
 		String player="";
-		Country fromc=countries.get(from);
-		Country toc=countries.get(to);
-		for(String players:playerSet.keySet()){
-			if(playerSet.get(players).getColor().equals(fromc.getColor())){
-				player=players;
+
+		if(mode.equalsIgnoreCase("human")) {
+			System.out.println("InitializePhase human");
+			Country fromc = countries.get(from);
+			Country toc = countries.get(to);
+			for (String players : playerSet.keySet()) {
+				if (playerSet.get(players).getColor().equals(fromc.getColor())) {
+					player = players;
+				}
 			}
+			playerSet.get(player).fortification(fromc, toc, move, countries);
+		}else{
+
+			System.out.println("InitializePhase no human");
+			String s= playerSet.get(from).fortification(countries.get(0), countries.get(1), move, countries);
+			String[] all=s.split(" ");
+			Country one=countries.get(all[0]);
+			Country two=countries.get(all[1]);
+			updateFortification(one,two,countries);
+
 		}
-		playerSet.get(player).fortification(fromc,toc,move,countries);
+
+		setChanged();
+		notifyObservers(this);
+
+	}
+
+
+	public void updateFortification(Country one, Country two,
+				HashMap<String, Country> countries){
+
+			int first=one.getArmy()+two.getArmy()-1;
+			int army=two.getArmy()-1;
+			for(String key:countries.keySet()) {
+				if (Integer.valueOf(key)==one.getName()) {
+					countries.get(key).setArmy(first);
+				}
+				if (Integer.valueOf(key)==two.getName()) {
+					countries.get(key).setArmy(1);
+				}
+			}
+
+			System.out.println("done update fortificatio in player from:");
+			System.out.println("country one : "+ one.getName()+
+					" get amry from country : " +two.getName()+" For " +army);
+			System.out.println("country one: "+ one.getName()+" army: "+one.getArmy());
+			System.out.println("country two: "+two.getName()+" army: "+two.getArmy());
+			System.out.println();
+			System.out.println();
+		}
+
 //		int start = countries.get(from).getArmy() - move;
 //		countries.get(from).setArmy(start);
 //
 //		int end = countries.get(to).getArmy() + move;
 //		countries.get(to).setArmy(end);
 
-		setChanged();
-		notifyObservers(this);
-
-	}
 
 	/**
      * This method is to earnCard.
@@ -625,6 +687,36 @@ public class InitializePhase extends Observable {
 
 		}
 		return max + 1;
+	}
+
+	public void Transfer(String record, Country att, Country def) {
+		boolean flag=false;
+		String[] readrecord = record.split(" ");
+		if (readrecord[1].equals("0")) {//update countries information
+
+			if (readrecord[0].equals(att.getName())) {
+				System.out.println( "attacker Player"+ att.getName()+" win");
+				if (!readrecord[2].equals("0")) {
+					flag = true;
+
+				}
+
+			}
+			else if (readrecord[0].equals("-1")) {
+
+				System.out.println("This is a draw.");
+			}
+			else {
+
+				System.out.println( "defender Player"+ def.getName()+" win");
+			}
+
+		}
+
+		int min=Integer.valueOf(readrecord[1]);
+
+		Fortification(String.valueOf(att.getName()),String.valueOf(def.getName()),min,"human");
+
 	}
 
 }

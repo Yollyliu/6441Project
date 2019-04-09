@@ -6,6 +6,7 @@ import Model.Country;
 import Model.Player;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class humanPlayer implements Strategy{
 
@@ -35,27 +36,29 @@ public class humanPlayer implements Strategy{
     }
 
     @Override
-    public void Reinforcement(HashMap<String, Player> playerSet,
+    public String Reinforcement(HashMap<String, Player> playerSet,
                               HashMap<String, Country> countries) {
         System.out.println(" hello, we are in human player reinforcement");
         player.getAllArmies();
+        return "";
     }
 
     @Override
-    public String Attack(String attacker, String defender,
-                       String mode, int attDices, int defDices,
-                       HashMap<String, Player> playerSet,
-                       HashMap<String, Country> countries,
-                       HashMap<String, Continent> continents) {
+    public LinkedList<String> Attack(String attacker, String defender,
+                                     String mode, int attDices, int defDices,
+                                     HashMap<String, Player> playerSet,
+                                     HashMap<String, Country> countries,
+                                     HashMap<String, Continent> continents) {
+        LinkedList<String> ans=new LinkedList <>();
         System.out.println(" hello, we are in human player attack");
         String result=player.attackPhase(attacker, defender, mode,
                 attDices, defDices,playerSet,countries,continents);
-        return result;
-
+        ans.add(result);
+        return ans;
     }
 
     @Override
-    public void Fortification(Country from, Country to,
+    public String Fortification(Country from, Country to,
                               int move,HashMap<String, Country> countries) {
 
         System.out.println(" hello, we are in human player fortification");
@@ -85,6 +88,7 @@ public class humanPlayer implements Strategy{
 //        }else{
 //            System.out.println("Cannot Transfer");
 //        }
+        return "";
 
     }
 

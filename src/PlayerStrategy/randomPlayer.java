@@ -6,6 +6,7 @@ import Model.Player;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class randomPlayer implements Strategy{
@@ -20,17 +21,19 @@ public class randomPlayer implements Strategy{
 
 
     @Override
-    public void Reinforcement(HashMap<String, Player> playerSet,
-                              HashMap<String, Country> countries) {
+    public String Reinforcement(HashMap<String, Player> playerSet,
+                              HashMap<String, Country> countries)
+            {
 
+        return "";
 
     }
 
     @Override
-    public String Attack(String attacker, String defender, String mode, int attDices,
-                       int defDices, HashMap<String, Player> playerSet,
-                       HashMap<String, Country> countries,
-                       HashMap<String, Continent> continents){
+    public LinkedList<String> Attack(String attacker, String defender, String mode, int attDices,
+                                     int defDices, HashMap<String, Player> playerSet,
+                                     HashMap<String, Country> countries,
+                                     HashMap<String, Continent> continents){
 
         Country strongest=
                 player.getCountryList().stream().max(
@@ -40,15 +43,18 @@ public class randomPlayer implements Strategy{
 
 
 
+        LinkedList<String> ans=new LinkedList <>();
 
 
-        return "";
+        return ans;
 
     }
 
     @Override
-    public void Fortification(Country from, Country to, int move,
+    public String Fortification(Country from, Country to, int move,
                               HashMap<String, Country> countries) {
 
+        String s="";
+        return s;
     }
 }
