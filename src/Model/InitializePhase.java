@@ -182,7 +182,7 @@ public class InitializePhase extends Observable {
 		int armyDefault = 0;
 		switch (playerNum) {
 		case 2:
-			armyDefault = 40;
+			armyDefault = 20;
 			break;
 		case 3:
 			armyDefault = 10;
@@ -291,66 +291,9 @@ public class InitializePhase extends Observable {
 	 * @param player Player name.
 	 */
 	public void Reinforcement(String player) {
-
-		// update armies number for each player
-		int system = SystemArmy(player);
-		int continent = ContinentArmy(player);
-		int card = 0;
-		playerSet.get(player).setArmy(system + continent + card);
-
+		playerSet.get(player).reinforcement();
 		setChanged();
 		notifyObservers(this);
-
-	}
-
-	/**
-	 * This method calculating the number of reinforcement armies.
-	 *
-	 * @param player Player name.
-	 * @return The number of reinforcement armies.
-	 */
-	public int SystemArmy(String player) {
-
-		if (playerSet.get(player).getCountryList().size() <= 9) {
-			return 3;
-		}
-		// countries # >9
-		else {
-			int n = playerSet.get(player).getCountryList().size() / 3;
-			n = (int) Math.floor(n);
-			return n;
-		}
-	}
-
-	/**
-	 * This method judges a play whether occupies a continent or not. If yes, then
-	 * player get control value, otherwise.
-	 *
-	 * @param player Player name.
-	 * @return Control value.
-	 */
-	public int ContinentArmy(String player) {
-		int n = 0;
-		LinkedList<Country> captital = playerSet.get(player).getCountryList();
-		HashMap<String, Integer> cal = new HashMap<>();
-		LinkedList<String> listB = new LinkedList<>();
-		for (int i = 0; i < captital.size(); i++) {
-			String c = captital.get(i).getContinent();
-
-			listB.add(c);
-		}
-		for (int i = 0; i < listB.size(); i++) {
-			int temp = Collections.frequency(listB, listB.get(i));
-			if (continents.get(listB.get(i)).getCountryList().size() == temp) {
-
-				cal.put(listB.get(i), continents.get(listB.get(i)).getConvalue());
-			}
-		}
-		for (String key : cal.keySet()) {
-			n = n + cal.get(key);
-		}
-		return n;
-
 	}
 
 	/**
@@ -406,10 +349,24 @@ public class InitializePhase extends Observable {
 	public String attackPhase(String attacker, String defender, String mode,
 							  int attDices, int defDices) {
 
-		Attack attack = new Attack(this.countries, this.continents, this.playerSet, attacker, defender, mode, attDices,
-				defDices);
+		System.out.println("we at attackPhase in initialize");
+		System.out.println("the attacker is :"+attacker);  //country
+		System.out.println("the defender is :"+defender);  //country
+		System.out.println("the playerset is :");
+		String playerAttack="";
+		for(String players:playerSet.keySet()){
+			LinkedList<Country> countries=playerSet.get(players).getCountryList();
+			for(int i=0;
+				i<countries.size();i++){
+				if(countries.get(i).getName()==Integer.valueOf(attacker)){
+					playerAttack=players;
+					break;
+				}
+			}
+		}
 
-		String result = attack.attacking();// invoking attacking function
+		String result=playerSet.get(playerAttack).attack(attacker, defender, mode, attDices,
+				defDices, playerSet, countries, continents);
 
 		if (result != "") {
 			setChanged();
@@ -421,7 +378,25 @@ public class InitializePhase extends Observable {
 		}
 
 		return "Failure";
+
 	}
+//
+//		Attack attack = new Attack(this.countries, this.continents, this.playerSet, attacker, defender, mode, attDices,
+//				defDices);
+//
+//		String result = attack.attacking();// invoking attacking function
+//
+//		if (result != "") {
+//			setChanged();
+//			notifyObservers(this);
+//			return result;
+//
+//		} else {
+//			System.out.println("Attack Failure!!!");
+//		}
+//
+//		return "Failure";
+//	}
 
 	/**
 	 * This method implements armies transfer in attack phase.
@@ -447,11 +422,20 @@ public class InitializePhase extends Observable {
 	 * @param move The number of armies to be moved.
 	 */
 	public void Fortification(String from, String to, int move) {
-		int start = countries.get(from).getArmy() - move;
-		countries.get(from).setArmy(start);
-
-		int end = countries.get(to).getArmy() + move;
-		countries.get(to).setArmy(end);
+		String player="";
+		Country fromc=countries.get(from);
+		Country toc=countries.get(to);
+		for(String players:playerSet.keySet()){
+			if(playerSet.get(players).getColor().equals(fromc.getColor())){
+				player=players;
+			}
+		}
+		playerSet.get(player).fortification(fromc,toc,move,countries);
+//		int start = countries.get(from).getArmy() - move;
+//		countries.get(from).setArmy(start);
+//
+//		int end = countries.get(to).getArmy() + move;
+//		countries.get(to).setArmy(end);
 
 		setChanged();
 		notifyObservers(this);

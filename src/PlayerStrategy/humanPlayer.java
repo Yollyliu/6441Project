@@ -13,23 +13,27 @@ public class humanPlayer implements Strategy{
     Player player;
 
     public humanPlayer(Player player){
+        System.out.println(" hello, we are in human player");
         this.player=player;
         this.behavior="Human";
     }
 
     @Override
     public void Reinforcement() {
+        System.out.println(" hello, we are in human player reinforcement");
         player.getAllArmies();
     }
 
     @Override
-    public void Attack(String attacker, String defender,
+    public String Attack(String attacker, String defender,
                        String mode, int attDices, int defDices,
                        HashMap<String, Player> playerSet,
                        HashMap<String, Country> countries,
                        HashMap<String, Continent> continents) {
-        player.attackPhase(attacker, defender, mode,
+        System.out.println(" hello, we are in human player attack");
+        String result=player.attackPhase(attacker, defender, mode,
                 attDices, defDices,playerSet,countries,continents);
+        return result;
 
     }
 
@@ -37,8 +41,9 @@ public class humanPlayer implements Strategy{
     public void Fortification(Country from, Country to,
                               int move,HashMap<String, Country> countries) {
 
-        if(player.canTransfer(player.getPlayerName(),String.valueOf(from.getName()),
-                String.valueOf(to.getName()),countries)) {
+        System.out.println(" hello, we are in human player fortification");
+     //   if(player.canTransfer(player.getPlayerName(),String.valueOf(from.getName()),
+      //          String.valueOf(to.getName()),countries)) {
             int start = from.getArmy() - move;
             int end = to.getArmy() + move;
             for(int i=0;i<player.getCountryList().size();i++) {
@@ -59,10 +64,10 @@ public class humanPlayer implements Strategy{
                     countries.get(key).setArmy(end);
                 }
             }
-
-        }else{
-            System.out.println("Cannot Transfer");
-        }
+//
+//        }else{
+//            System.out.println("Cannot Transfer");
+//        }
 
     }
 

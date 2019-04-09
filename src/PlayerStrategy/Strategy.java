@@ -9,7 +9,7 @@ import java.util.HashMap;
 public interface Strategy {
 
     public void Reinforcement();
-    public void Attack(String attacker, String defender, String mode, int attDices,
+    public String Attack(String attacker, String defender, String mode, int attDices,
                        int defDices, HashMap<String, Player> playerSet,
                        HashMap<String, Country> countries,
                        HashMap<String, Continent> continents);
