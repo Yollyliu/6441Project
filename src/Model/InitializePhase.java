@@ -23,6 +23,7 @@ public class InitializePhase extends Observable {
 	private HashMap<String, Country> countries;
 	private HashMap<String, Continent> continents;
 	private ColorList cList = new ColorList();
+	private ArrayList<String> behavoirs = new ArrayList<>();
 
 	/**
 	 * This is a constructor of initializePhase.
@@ -98,14 +99,15 @@ public class InitializePhase extends Observable {
 	/**
 	 * This method adding data to playerNum, countries, continents.
 	 *
-	 * @param playerNum  The number of players.
+	 * @param behavoirs  The strategy of players.
 	 * @param countries  A hash map storing all countries which are in the map.
 	 * @param continents A hash map storing all continents which are in the map.
 	 */
-	public void addData(int playerNum, HashMap<String, Country> countries, HashMap<String, Continent> continents) {
+	public void addData(ArrayList<String> behavoirs, HashMap<String, Country> countries, HashMap<String, Continent> continents) {
 		this.countries = countries;
 		this.continents = continents;
-		this.playerNum = playerNum;
+		this.playerNum = behavoirs.size();
+		this.behavoirs = behavoirs;
 	}
 
 	/**
@@ -159,7 +161,8 @@ public class InitializePhase extends Observable {
 	private boolean initializePlayerSet() {
 		LinkedList<Color> colorLinkedList = cList.getColors();
 		for (int i = 1; i <= playerNum; i++) {
-			Player player = new Player(String.valueOf(i),"Human");
+			Player player = new Player(String.valueOf(i),behavoirs.get(i - 1));
+			System.out.println("player name: " + String.valueOf(i) + ",mode: " + behavoirs.get(i - 1));
 			player.setColor(colorLinkedList.get(i - 1));// set player color
 			playerSet.put(player.getPlayerName(), player);// add player to playerSet
 		}

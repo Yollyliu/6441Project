@@ -17,7 +17,7 @@ public class aggressivePlayer  implements Strategy{
 
     public aggressivePlayer(Player player){
         this.player=player;
-        this.behavior="Human";
+        this.behavior="Agressive";
     }
     @Override
     public void Reinforcement(HashMap<String, Player> playerSet,
@@ -32,7 +32,6 @@ public class aggressivePlayer  implements Strategy{
             }
         } );
 
-
         Country strongest=player.getCountryList().getFirst();
         System.out.println("Strongest country: "+strongest.getName()+
                 " Army: "+player.getArmy());
@@ -45,9 +44,9 @@ public class aggressivePlayer  implements Strategy{
 
     @Override
     public String Attack(String attacker, String defender, String mode, int attDices,
-                       int defDices, HashMap<String, Player> playerSet,
-                       HashMap<String, Country> countries,
-                       HashMap<String, Continent> continents) {
+                         int defDices, HashMap<String, Player> playerSet,
+                         HashMap<String, Country> countries,
+                         HashMap<String, Continent> continents) {
         System.out.println(" hello, we are in human player attack");
 
         LinkedList<String> ans=new LinkedList <>();
@@ -94,21 +93,32 @@ public class aggressivePlayer  implements Strategy{
                 return Collator.getInstance().compare(o1.getArmy(), o2.getArmy());
             }
         } );
+
+        HashMap<Integer,Integer> frontNumb=new HashMap <>();
+        frontNumb=player.Front(countries);
         int length=player.getCountryList().size();
-        for(int i=0;i<length;i++){
-            for(int j=0;j<length;j++){
 
-                Country one=player.getCountryList().get(i);
-                Country two=player.getCountryList().get(j);
+        for(int i=0;i<length;i++) {
+            Country one = player.getCountryList().get(i);
 
-                if(player.canTransfer(one.getName(),two.getName(),countries)){
+            if (frontNumb.containsKey(one.getName())) {
 
-                   player.updateFortification(one,two,countries);
-                   return;
+                for (int j = 0; j < length; j++) {
+
+                    if (i != j) {
+
+                        Country two = player.getCountryList().get(j);
+
+                        if (player.canTransfer(one.getName(), two.getName(), countries)) {
+                            player.updateFortification(one, two, countries);
+                            return;
+                        }
+                    }
                 }
             }
         }
     }
+
 
 
 }

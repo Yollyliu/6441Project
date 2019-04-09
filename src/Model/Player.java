@@ -24,6 +24,7 @@ public class Player {
 	private LinkedList<Card> cardList = new LinkedList<>();
 	private int changeCardTime = 1;
 	private Strategy strategy;
+	private String mode="";
 
 
 
@@ -44,10 +45,26 @@ public class Player {
 		this.playerName = playerName;
 		this.color = null;
 		this.army = 0;
+		this.mode=behavoir;
 
 		this.strategy= strategyFactory.getBehavior(behavoir,this);
 	}
 
+	public Strategy getStrategy() {
+		return strategy;
+	}
+
+	public void setStrategy(Strategy strategy) {
+		this.strategy = strategy;
+	}
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
 
 	/**
 	 * This method obtains player name.
@@ -98,7 +115,7 @@ public class Player {
 	 * This method modifies the number of armies player having.
 	 *
 	 * @param army the number of armies.
-	 * 
+	 *
 	 */
 	public void setArmy(int army) {
 		this.army = army;
@@ -142,7 +159,7 @@ public class Player {
 
 	/**
 	 * This method obtains the times of changing card.
-	 * 
+	 *
 	 * @return The times of changing card.
 	 */
 	public int getChangeCardTime() {
@@ -151,7 +168,7 @@ public class Player {
 
 	/**
 	 * This method modifies the times of changing card.
-	 * 
+	 *
 	 * @param changeCardTime The times of changing card.
 	 */
 	public void setChangeCardTime(int changeCardTime) {
@@ -162,7 +179,7 @@ public class Player {
 	//////////////////////// Reinforcement /////////////////////////////////////
 
 	public void reinforcement(HashMap<String, Player> playerSet,
-			HashMap<String, Country> countries){
+							  HashMap<String, Country> countries){
 
 		this.strategy.Reinforcement(playerSet,countries);
 	}
@@ -195,8 +212,8 @@ public class Player {
 	}
 
 	public void updateReinforcement(int country, int army,
-						   HashMap<String, Player> playerSet,
-						   HashMap<String, Country> countries) {
+									HashMap<String, Player> playerSet,
+									HashMap<String, Country> countries) {
 
 
 		for(int i=0;i<countryList.size();i++){
@@ -249,10 +266,10 @@ public class Player {
 
 
 	public String attack(String attacker, String defender, String mode,
-					   int attDices, int defDices,
-					   HashMap<String, Player> playerSet,
-					   HashMap<String, Country> countries,
-					   HashMap<String, Continent> continents){
+						 int attDices, int defDices,
+						 HashMap<String, Player> playerSet,
+						 HashMap<String, Country> countries,
+						 HashMap<String, Continent> continents){
 		System.out.println("we are at attack in player");
 
 		String result=this.strategy.Attack(attacker, defender, mode,
@@ -269,7 +286,7 @@ public class Player {
 		Attack attack = new Attack(countries, continents, playerSet, attacker,
 				defender, mode, attDices, defDices);
 
-		String result = attack.attacking();// invoking attacking function
+		String result = attack.attacking(this.mode);// invoking attacking function
 
 		if (result != "") {
 			return result;
@@ -412,6 +429,45 @@ public class Player {
 				countries.get(key).setArmy(1);
 			}
 		}
+
+	}
+
+
+	public void agrressiveStartUp(HashMap<String, Country> countries){
+		HashMap<Integer,Integer> frontNum=new HashMap <>();
+		frontNum=Front(countries);
+		int max=-999;
+		String flag="";
+		for(String key:countries.keySet()){
+			int cur=countries.get(key).getArmy();
+			if(max<cur) {
+				max = cur;
+				flag=key;
+			}
+		}
+		int previous=countries.get(flag).getArmy();
+		countries.get(flag).setArmy(this.getArmy()+previous);
+		this.setArmy(0);
+
+	}
+
+	public HashMap<Integer,Integer> Front(
+			HashMap<String, Country> countries){
+
+		HashMap<Integer,Integer> frontNum=new HashMap <>();
+		for(int i=0;i<this.getCountryList().size();i++){  //一个国家一个国家的来
+			String[] neib= this.getCountryList().get(i).getCountryList().split(" ");
+			int numb=0;
+			for(int j=0;j<neib.length;j++){
+				if(! countries.get(neib[j]).getColor().equals(this.getColor())){
+					numb++;
+				}
+			}
+			if(numb!=0){
+				frontNum.put(this.getCountryList().get(i).getName(),numb);
+			}
+		}
+		return frontNum;
 
 	}
 }

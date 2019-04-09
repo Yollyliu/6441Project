@@ -59,50 +59,59 @@ public class StartGame extends JFrame{
 	             
 			}
 		});
-	
-	
-
-}
+	}
 	/**
 	 * It is a panel to add buttons.
 	 */
 	public class StartPane extends JLayeredPane{
 		
 		public StartPane(){
-			
-		JButton	play = new JButton("Play Game");
-		add(play);
-		play.setBounds(200, 200, 200, 100);
-		
-		JButton	Edit = new JButton("Edit Map");
-		add(Edit);
-		Edit.setBounds(200, 300, 200, 100);
-		Edit.setVisible(true);
-	
-		play.addActionListener(new ActionListener() {
-			
-			/**
-			 * This method will be invoked when an action occurs.
-			 */
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-				new InitGame();
-				System.out.println("Init Game");
-			}
-		});
-		
-		Edit.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-				new SelectMap();
-				System.out.println("Select map");
-				
-			}
-		});
-	}
+
+			JButton single = new JButton("Singe Game");
+			add(single);
+			single.setBounds(200, 100, 200, 100);
+			single.setVisible(true);
+
+			JButton tournament = new JButton("Tournament");
+			add(tournament);
+			tournament.setBounds(200, 200, 200, 100);
+			tournament.setVisible(true);
+
+			JButton Edit = new JButton("Edit Map");
+			add(Edit);
+			Edit.setBounds(200, 300, 200, 100);
+			Edit.setVisible(true);
+
+			single.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					frame.dispose();
+					new InitGame();
+					System.out.println("Init Game");
+				}
+			});
+
+			tournament.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					frame.dispose();
+					new InitGame();
+					System.out.println("Init Game");
+				}
+			});
+
+			Edit.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					frame.dispose();
+					new SelectMap();
+					System.out.println("Select map");
+
+				}
+			});
+		}
+
 		/**
 		 * It defines the window size.
 		 */

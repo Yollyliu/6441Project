@@ -1,5 +1,6 @@
 package Controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 import Model.Checkmap;
@@ -35,10 +36,10 @@ public class InitGame_controller extends Object {
 	/**
 	 * It receive the player number and file path.
 	 * 
-	 * @param num The number of players.
+	 * @param behaviors The strategy of players.
 	 * @param filePath File path.
 	 */
-	public void receive(int num, String filePath) {
+	public void receive(ArrayList<String> behaviors, String filePath) {
 
 		// checkMap whether connected or not
 		iomodel.readFile(filePath);
@@ -49,7 +50,7 @@ public class InitGame_controller extends Object {
 		checkmap.judge();
 		boolean result = Message.isSuccess();
 		if (result) {
-			pharseModel.addData(num, countries, continents);
+			pharseModel.addData(behaviors, countries, continents);
 			pharseModel.initPhase();
 			countries = pharseModel.getCountries();
 			continents = pharseModel.getContinents();

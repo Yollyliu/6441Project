@@ -54,6 +54,7 @@ public class PlayView extends JFrame implements Observer {
 	public JLabel armies;
 	public String currentPhase;
 	public JButton phase;
+	public JLabel mode;
 	private boolean WIN = false;
 	BackEnd b;
 	InitializePhase observable = new InitializePhase();
@@ -130,6 +131,7 @@ public class PlayView extends JFrame implements Observer {
 			dominationView = new DominationView(observable);
 			observable.addObserver(dominationView);
 			File image = new File("resource/tower.png");
+			LinkedList<JLabel> labelsCountry=new LinkedList <>();
 
 			for (String key : countries.keySet()) {
 
@@ -167,6 +169,7 @@ public class PlayView extends JFrame implements Observer {
 					label.addMouseListener(ih);
 					label.addMouseMotionListener(ih);
 					add(label);
+					labelsCountry.add(label);
 
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -206,7 +209,7 @@ public class PlayView extends JFrame implements Observer {
 			color.setBackground(playerSet.get("1").getColor());
 			color.setOpaque(true);
 			add(color);
-
+			
 			// receive armies number
 			JLabel army = new JLabel();
 			army.setText("Army: ");

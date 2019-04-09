@@ -43,8 +43,9 @@ public class Attack {
 	 * @param defDices      The number of dices defender chooses.
 	 */
 	public Attack(HashMap<String, Country> countries, HashMap<String, Continent> continents,
-			HashMap<String, Player> playerSet, String attackCountry, String defendCountry, String mode, int attDices,
-			int defDices) {
+				  HashMap<String, Player> playerSet, String attackCountry,
+				  String defendCountry, String mode, int attDices,
+				  int defDices) {
 		this.countries = countries;
 		this.continents = continents;
 		this.playerSet = playerSet;
@@ -57,7 +58,7 @@ public class Attack {
 
 	/**
 	 * This is Attack constructor initializing variables.
-	 * 
+	 *
 	 * @param countries     A hash map stores all countries.
 	 * @param continents    A hash map stores all continents.
 	 * @param playerSet     A hash map stores all players.
@@ -65,7 +66,7 @@ public class Attack {
 	 * @param defendCountry The defend country's name.
 	 */
 	public Attack(HashMap<String, Country> countries, HashMap<String, Continent> continents,
-			HashMap<String, Player> playerSet, String attackCountry, String defendCountry) {
+				  HashMap<String, Player> playerSet, String attackCountry, String defendCountry) {
 		this.countries = countries;
 		this.continents = continents;
 		this.playerSet = playerSet;
@@ -111,7 +112,7 @@ public class Attack {
 
 	/**
 	 * This method is to get playerSet in hash map.
-	 * 
+	 *
 	 * @return playerSet  It is a hash map.
 	 */
 	public HashMap<String, Player> getPlayerSet() {
@@ -250,18 +251,18 @@ public class Attack {
 	 *
 	 * @return A result of attack.
 	 */
-	public String attacking() {
+	public String attacking(String behavioir) {
 
 		switch (mode) {
-		case "All_Out":
-			System.out.println("Get into All_Out mode.");
-			return allOut();
-		case "One_Time":
-			System.out.println("Get into One_Time mode.");
-			return oneTime();
-		default:
-			System.out.println("Mode function invoking Failure");
-			break;
+			case "All_Out":
+				System.out.println("Get into All_Out mode.");
+				return allOut(behavioir);
+			case "One_Time":
+				System.out.println("Get into One_Time mode.");
+				return oneTime();
+			default:
+				System.out.println("Mode function invoking Failure");
+				break;
 		}
 		System.out.println("This is in Attacking function");
 		return "Failure";
@@ -299,7 +300,7 @@ public class Attack {
 //      getting two rolling dice result
 		LinkedList<Integer> attDicesList = rollDices(attDices);
 		LinkedList<Integer> defDicesList = rollDices(defDices);
-		
+
 		System.out.println("Result rolling dices:\n" + "attDices: " + attDicesList.toString() + "\n" + "defDices: "
 				+ defDicesList.toString());
 
@@ -330,7 +331,7 @@ public class Attack {
 	 *
 	 * @return A result of all out attack.
 	 */
-	public String allOut() {
+	public String allOut(String behavoir) {
 
 		System.out.println("This is an " + this.mode + "mode: ");
 		String result = "";
@@ -350,7 +351,15 @@ public class Attack {
 
 		result = findWinner(0, 0);
 
-		int[] range = intervalNum();
+		int [] range=new int[2];
+		if(!behavoir.equals("Human")) {
+			range[0]=intervalNum()[0];
+			range[1]=1;
+
+		}else {
+			range[0] = intervalNum()[0];
+			range[1]=intervalNum()[1];
+		}
 
 		if (countries.get(defendCountry).getArmy() == 0) {
 			updating(range);
@@ -485,36 +494,36 @@ public class Attack {
 	private String findWinner(int att, int def) {
 
 		switch (this.mode) {
-		case "One_Time":
-			System.out.println("Armies compare" + att + " " + def + " " + countries.get(attackCountry).getArmy() + " "
-					+ countries.get(defendCountry).getArmy());
-			if (countries.get(defendCountry).getArmy() == 0) {
-				System.out.println("Winner is attacker.");
-				return findPlayer(attackCountry).getPlayerName();
-			} else {// modify
-				int a = att - countries.get(attackCountry).getArmy();
-				int d = def - countries.get(defendCountry).getArmy();
-
-				if (a == d) {
-					System.out.println("Draw");
-					return "-1";
-				} else if (a > d) {
-					System.out.println("Winner is defender.");
-					return findPlayer(defendCountry).getPlayerName();
-				} else {
+			case "One_Time":
+				System.out.println("Armies compare" + att + " " + def + " " + countries.get(attackCountry).getArmy() + " "
+						+ countries.get(defendCountry).getArmy());
+				if (countries.get(defendCountry).getArmy() == 0) {
 					System.out.println("Winner is attacker.");
 					return findPlayer(attackCountry).getPlayerName();
+				} else {// modify
+					int a = att - countries.get(attackCountry).getArmy();
+					int d = def - countries.get(defendCountry).getArmy();
+
+					if (a == d) {
+						System.out.println("Draw");
+						return "-1";
+					} else if (a > d) {
+						System.out.println("Winner is defender.");
+						return findPlayer(defendCountry).getPlayerName();
+					} else {
+						System.out.println("Winner is attacker.");
+						return findPlayer(attackCountry).getPlayerName();
+					}
 				}
-			}
-		case "All_Out":
-			if (countries.get(defendCountry).getArmy() == 0) {
-				return findPlayer(attackCountry).getPlayerName();
-			} else if (countries.get(attackCountry).getArmy() == 1) {
-				return findPlayer(defendCountry).getPlayerName();
-			}
-		default:
-			System.out.println("Find winner failure!");
-			break;
+			case "All_Out":
+				if (countries.get(defendCountry).getArmy() == 0) {
+					return findPlayer(attackCountry).getPlayerName();
+				} else if (countries.get(attackCountry).getArmy() == 1) {
+					return findPlayer(defendCountry).getPlayerName();
+				}
+			default:
+				System.out.println("Find winner failure!");
+				break;
 		}
 
 		return null;
@@ -561,7 +570,7 @@ public class Attack {
 		this.HAS_CARD = true;
 		Player attPlayer = findPlayer(attackCountry);
 		Player defPlayer = findPlayer(defendCountry);
-		
+
 //		updating attacker and defender card List
 		System.out.println("Player" + attPlayer.getPlayerName()+ " cards: "  + attPlayer.getCardList().size());
 		for (Card card : attPlayer.getCardList()) {
@@ -582,7 +591,7 @@ public class Attack {
 			nullList.clear();
 			defPlayer.setCardList(nullList);
 			break;
-		}	
+		}
 		System.out.println("Player" + attPlayer.getPlayerName()+ " cards: " + attPlayer.getCardList().size());
 		for (Card card : attPlayer.getCardList()) {
 			System.out.println(card.getName());
@@ -591,7 +600,7 @@ public class Attack {
 		for (Card card : defPlayer.getCardList()) {
 			System.out.println(card.getName());
 		}
-	
+
 //      update information, like Player, country
 		Country country = countries.get(defendCountry);
 		country.setColor(countries.get(attackCountry).getColor());

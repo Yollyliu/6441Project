@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -37,7 +38,8 @@ import Model.Message;
  */
 public class InitGame extends JFrame {
 
-	int n;
+	ArrayList<String> behaviors = new ArrayList<>();
+//	int n;
 	JFrame frame = new JFrame();
 
 	public HashMap<String, Country> countries = new HashMap<>();
@@ -79,31 +81,104 @@ public class InitGame extends JFrame {
 		 */
 		public initPane() {
 
-			JLabel palyernum = new JLabel("player number :");
-			palyernum.setBounds(150, 100, 100, 30);
-			add(palyernum);
+//			JLabel palyernum = new JLabel("player number :");
+//			palyernum.setBounds(150, 100, 100, 30);
+//			add(palyernum);
+//
+//			final JTextField num = new JTextField(20);
+//			num.setBounds(250, 100, 80, 25);
+//			add(num);
+//			num.addKeyListener(new KeyAdapter() {
+//
+//				/**
+//				 * This is a keyPressed function.
+//				 */
+//				@Override
+//				public void keyPressed(KeyEvent key) {
+//					if (key.getKeyCode() == KeyEvent.VK_ENTER) {
+//						System.out.println(num.getText());
+//						n = Integer.parseInt(num.getText());
+//					}
+//				}
+//
+//			});
+			JLabel label = new JLabel("Please select player: ");
+			add(label);
+			label.setBounds(50,150,200,25);
 
-			final JTextField num = new JTextField(20);
-			num.setBounds(250, 100, 80, 25);
-			add(num);
-			num.addKeyListener(new KeyAdapter() {
-				
-				/**
-				 * This is a keyPressed function.
-				 */
-				@Override
-				public void keyPressed(KeyEvent key) {
-					if (key.getKeyCode() == KeyEvent.VK_ENTER) {
-						System.out.println(num.getText());
-						n = Integer.parseInt(num.getText());
-					}
-				}
+			JButton human = new JButton("Human");
+			add(human);
+			human.setBounds(50,200,80,50);
 
-			});
+			JButton aggressive = new JButton("Aggressive");
+			add(aggressive);
+			aggressive.setBounds(150,200,80,50);
+
+			JButton benevolent = new JButton("Benevolent");
+			add(benevolent);
+			benevolent.setBounds(250,200,80,50);
+
+			JButton random = new JButton("Random");
+			add(random);
+			random.setBounds(350,200,80,50);
+
+			JButton cheater = new JButton("Cheater");
+			add(cheater);
+			cheater.setBounds(450,200,80,50);
+
+			JLabel player_num = new JLabel("Player number:");
+			add(player_num);
+			player_num.setBounds(50,250,100,25);
+
+			JLabel numText = new JLabel("0");
+			add(numText);
+			numText.setBounds(150,250,80,25);
 
 			JButton select = new JButton("Select a map");
 			add(select);
-			select.setBounds(200, 200, 200, 100);
+			select.setBounds(200, 300, 200, 100);
+
+
+
+			human.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					behaviors.add("human");
+					numText.setText(Integer.toString(behaviors.size()));
+				}
+			});
+
+			aggressive.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					behaviors.add("aggressive");
+					numText.setText(Integer.toString(behaviors.size()));
+				}
+			});
+
+			benevolent.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					behaviors.add("benevolent");
+					numText.setText(Integer.toString(behaviors.size()));
+				}
+			});
+
+			random.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					behaviors.add("random");
+					numText.setText(Integer.toString(behaviors.size()));
+				}
+			});
+
+			cheater.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					behaviors.add("cheater");
+					numText.setText(Integer.toString(behaviors.size()));
+				}
+			});
 
 			select.addActionListener(new ActionListener() {
 
@@ -138,7 +213,7 @@ public class InitGame extends JFrame {
 								frame.dispose();
 
 								InitGame_controller controller = new InitGame_controller();
-								controller.receive(n, filename);
+								controller.receive(behaviors, filename);
 							}
 
 						} else {
