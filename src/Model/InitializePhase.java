@@ -159,7 +159,7 @@ public class InitializePhase extends Observable {
 	private boolean initializePlayerSet() {
 		LinkedList<Color> colorLinkedList = cList.getColors();
 		for (int i = 1; i <= playerNum; i++) {
-			Player player = new Player(String.valueOf(i));
+			Player player = new Player(String.valueOf(i),"Human");
 			player.setColor(colorLinkedList.get(i - 1));// set player color
 			playerSet.put(player.getPlayerName(), player);// add player to playerSet
 		}
@@ -403,7 +403,8 @@ public class InitializePhase extends Observable {
 	 * @param defDices The number of dices defender chooses.
 	 * @return The result of attack phase.
 	 */
-	public String attackPhase(String attacker, String defender, String mode, int attDices, int defDices) {
+	public String attackPhase(String attacker, String defender, String mode,
+							  int attDices, int defDices) {
 
 		Attack attack = new Attack(this.countries, this.continents, this.playerSet, attacker, defender, mode, attDices,
 				defDices);

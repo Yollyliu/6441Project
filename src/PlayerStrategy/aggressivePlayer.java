@@ -1,18 +1,36 @@
 package PlayerStrategy;
 
-public class aggressivePlayer extends Player implements Strategy{
+import Model.Continent;
+import Model.Country;
+import Model.Player;
+
+import java.util.HashMap;
+
+public class aggressivePlayer  implements Strategy{
+
+    String behavior="";
+    Player player;
+
+    public aggressivePlayer(Player player){
+        this.player=player;
+        this.behavior="Human";
+    }
     @Override
     public void Reinforcement() {
 
     }
 
     @Override
-    public void Attack() {
+    public void Attack(String attacker, String defender, String mode, int attDices,
+                       int defDices, HashMap<String, Player> playerSet,
+                       HashMap<String, Country> countries,
+                       HashMap<String, Continent> continents) {
 
     }
 
     @Override
-    public void Fortification() {
+    public void Fortification(Country from, Country to, int move,
+                              HashMap<String, Country> countries) {
 
     }
 }
